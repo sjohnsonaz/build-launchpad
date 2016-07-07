@@ -81,10 +81,17 @@ app.use(function(req: express.Request, res: express.Response, next: express.Next
 if (app.get('env') === 'development') {
     app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
         res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+        if (res.locals.isService) {
+            res.json({
+                message: err.message,
+                error: err
+            });
+        } else {
+            res.render('error', {
+                message: err.message,
+                error: err
+            });
+        }
     });
 }
 
@@ -92,11 +99,17 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
     res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    if (res.locals.isService) {
+        res.json({
+            message: err.message,
+            error: err
+        });
+    } else {
+        res.render('error', {
+            message: err.message,
+            error: {}
+        });
+    }
 });
-
 
 module.exports = app;
