@@ -25,7 +25,6 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.14.0",
     "handlebars-intl": "^1.1.2",
-    "jade": "~1.11.0",
     "mongodb": "^2.1.18",
     "mongoose": "^4.5.3",
     "morgan": "~1.7.0",
