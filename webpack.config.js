@@ -1,10 +1,11 @@
+var path = require('path');
+
 module.exports = {
     entry: {
-        'graphTest': './src/test/ts/graphTest.ts',
-        'cascadeTest': './src/test/ts/cascadeTest.ts'
+        'main': './resources/scripts/main.ts'
     },
     output: {
-        filename: './dist/bundle/[name].js',
+        filename: './public/bundle/[name].js',
         libraryTarget: 'var',
         library: '[name]'
     },

@@ -12,7 +12,8 @@
     "prepublish": "tsc",
     "test": "jest",
     "browser": "webpack --config webpack.config.js",
-    "dev": "webpack --config webpack.config.js --watch"
+    "dev": "webpack --config webpack.config.js --watch",
+    "dev-server": "nodemon ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "jest-cli": "^12.1.1",
+    "nodemon": "^1.9.2",
     "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
     "webpack": "^1.13.1"

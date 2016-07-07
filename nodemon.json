@@ -1,0 +1,5 @@
+{
+  "verbose": true,
+  "watch": ["bin/www", "dist/"],
+  "ignore": ["*.d.ts", "*.js.map", "dist/__tests__/", "dist/resources/"]
+}

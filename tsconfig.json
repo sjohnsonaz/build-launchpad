@@ -27,7 +27,7 @@
     "webpack.config.js"
   ],
   "compileOnSave": true,
-  "buildOnSave": true,
+  "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": false
   }
