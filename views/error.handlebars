@@ -1,0 +1,9 @@
+{{#section 'scripts'}}
+{{/section}}
+
+<h1>{{title}}</h1>
+<h2>{{message}}</h2>
+{{#if error}}
+    <h3>{{error.status}}</h3>
+    <pre>{{error.stack}}</pre>
+{{/if}}
