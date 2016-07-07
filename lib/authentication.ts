@@ -1,8 +1,5 @@
-import path from 'path';
-import crypto from 'crypto';
-
-import passport from 'passport';
-import passportLocal from 'passport-local';
+import * as passport from 'passport';
+import * as passportLocal from 'passport-local';
 
 import config from '../config';
 

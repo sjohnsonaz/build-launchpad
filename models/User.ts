@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 //var ObjectId = mongoose.Schema.Types.ObjectId;
 
