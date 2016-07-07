@@ -30,6 +30,7 @@ export default class CreateAdmin {
             } else {
                 console.log(user);
             }
+            mongoose.disconnect();
         });
     }
 }
