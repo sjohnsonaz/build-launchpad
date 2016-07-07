@@ -1,5 +1,7 @@
 import * as express from 'express';
 
+import UserGateway from '../gateways/UserGateway';
+
 const router: express.Router = express.Router();
 
 /* GET home page. */

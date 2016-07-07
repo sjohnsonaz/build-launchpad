@@ -14,10 +14,9 @@ import * as mongoose from 'mongoose';
 
 var MongoStore = connectMongo(session);
 
+import authentication from './lib/authentication';
+import routing from './lib/routing';
 import handlebars from './lib/handlebars';
-
-import routes from './routes/index';
-import users from './routes/users';
 
 import config from './config';
 
@@ -66,8 +65,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use('/', routes);
-app.use('/users', users);
+routing(app);
 
 // catch 404 and forward to error handler
 app.use(function(req: express.Request, res: express.Response, next: express.NextFunction) {
