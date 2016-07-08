@@ -1,41 +1,38 @@
-import User from '../models/User';
+import User, {UserDocument} from '../schemas/User';
 
 function buildUser(user, callback) {
     callback(undefined, user);
 }
-
-export class UserGateway {
-    create(data, callback) {
+export default class UserGateway {
+    static create(data, callback) {
         User.findOne({
             username: data.username
-        }, {
-                _id: 1
-            }, function(err, result) {
-                if (!err && !result) {
-                    var user = new User(data);
-                    user.save(function(err, user) {
-                        if (err) {
-                            callback(err, user);
-                        } else {
-                            buildUser(user, callback);
-                        }
-                    });
-                } else {
-                    callback(err, false);
-                }
-            });
+        }, { _id: 1 }, function(err, result) {
+            if (!err && !result) {
+                var user = new User(data);
+                user.save(function(err, user) {
+                    if (err) {
+                        callback(err, user);
+                    } else {
+                        buildUser(user, callback);
+                    }
+                });
+            } else {
+                callback(err, false);
+            }
+        });
     }
-    get(id, callback) {
+    static get(id, callback) {
         User.findOne({
             _id: id
         }, callback);
     }
-    getByUsername(username, callback) {
+    static getByUsername(username, callback) {
         User.findOne({
             username: username
         }, callback);
     }
-    list(params, callback) {
+    static list(params, callback) {
         params = params || {};
         var find = params.find || {};
         var select = params.select;
@@ -70,19 +67,19 @@ export class UserGateway {
             }
         });
     }
-    update(id, data, callback) {
+    static update(id, data, callback) {
         User.update({
             _id: id
         }, data, {
                 runValidators: true
             }, callback);
     }
-    delete(id, callback) {
+    static delete(id, callback) {
         User.remove({
             _id: id
         }, callback);
     }
-    getOrCreate(data, callback) {
+    static getOrCreate(data, callback) {
         User.findOne({
             username: data.username
         }, function(err, user) {
@@ -104,7 +101,7 @@ export class UserGateway {
             }
         });
     }
-    usernameExists(username, callback) {
+    static usernameExists(username, callback) {
         User.findOne({
             username: username
         }, {
@@ -113,10 +110,10 @@ export class UserGateway {
                 callback(err, !err && result);
             });
     }
-    login(username, password, callback) {
+    static login(username, password, callback) {
         User.findOne({
             username: username
-        }).select('+password +salt +algorithm').exec(function(err, user: any) {
+        }).select('+password +salt +algorithm').exec(function(err, user) {
             if (!err && user) {
                 if (user.validPassword(password)) {
                     user.password = undefined;
@@ -132,5 +129,3 @@ export class UserGateway {
         });
     }
 }
-
-export default new UserGateway();

@@ -4,6 +4,8 @@ import * as mongoose from 'mongoose';
 
 import config from '../config';
 
+import {IUser} from '../models/IUser';
+
 //import {testPassword} from '../lib/Validation';
 
 var UserSchema = new mongoose.Schema({
@@ -96,6 +98,9 @@ UserSchema.pre('update', function(next) {
     next();
 });
 
-var User = mongoose.model('User', UserSchema);
+export interface UserDocument extends mongoose.Document, IUser {
+    validPassword: (password: string) => boolean;
+}
+const User = mongoose.model<UserDocument>('User', UserSchema);
 
 export default User;
