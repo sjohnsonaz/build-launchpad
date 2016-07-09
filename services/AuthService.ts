@@ -33,7 +33,7 @@ router.post('/impersonate', AuthHelper.adminNotImpersonated, function(req, res, 
             var adminUser = req.user;
             req.session.regenerate(function(err) {
                 if (!err) {
-                    (req.session as any).adminUser = adminUser;
+                    req.session.adminUser = adminUser;
                     req.logIn(user, function(err) {
                         if (err) {
                             return next(err);
