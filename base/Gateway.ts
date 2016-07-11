@@ -5,10 +5,6 @@ export interface QueryResult<T extends mongoose.Document> {
     results: T[];
 }
 
-interface MongooseModel<T extends mongoose.Document> extends mongoose.Model<T> {
-
-}
-
 export default class Gateway<T extends mongoose.Document> {
     modelType:  mongoose.Model<T>;
     constructor(modelType: mongoose.Model<T>) {
