@@ -5,6 +5,7 @@ import config from '../config';
 
 import UserGateway from '../gateways/UserGateway';
 
+const userGateway = new UserGateway();
 var LocalStrategy = passportLocal.Strategy;
 
 export default function run(app) {
@@ -17,6 +18,6 @@ export default function run(app) {
     });
 
     passport.use(new LocalStrategy(function(username, password, callback) {
-        UserGateway.login(username, password, callback);
+        userGateway.login(username, password, callback);
     }));
 }

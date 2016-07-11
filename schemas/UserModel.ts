@@ -8,7 +8,7 @@ import {IUser} from '../models/IUser';
 
 //import {testPassword} from '../lib/Validation';
 
-var UserSchema = new mongoose.Schema({
+export const UserSchema: mongoose.Schema = new mongoose.Schema({
     username: {
         type: String,
         trim: true,
@@ -101,6 +101,5 @@ UserSchema.pre('update', function(next) {
 export interface UserDocument extends mongoose.Document, IUser {
     validPassword: (password: string) => boolean;
 }
-const User = mongoose.model<UserDocument>('User', UserSchema);
 
-export default User;
+export default mongoose.model<UserDocument>('User', UserSchema);

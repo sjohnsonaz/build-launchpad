@@ -5,6 +5,7 @@ import UserGateway from '../gateways/UserGateway';
 import AuthHelper from '../helpers/AuthHelper';
 
 const router: express.Router = express.Router();
+const userGateway = new UserGateway();
 
 router.get('/', function(req, res, next) {
     res.json({
@@ -28,7 +29,7 @@ router.post('/logout', function(req, res, next) {
 });
 
 router.post('/impersonate', AuthHelper.adminNotImpersonated, function(req, res, next) {
-    UserGateway.getByUsername(req.body.username, function(err, user) {
+    userGateway.getByUsername(req.body.username, function(err, user) {
         if (!err && user) {
             var adminUser = req.user;
             req.session.regenerate(function(err) {

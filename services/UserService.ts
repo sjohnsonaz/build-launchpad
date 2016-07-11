@@ -4,9 +4,10 @@ import AuthHelper from '../helpers/AuthHelper';
 import UserGateway from '../gateways/UserGateway';
 
 const router: express.Router = express.Router();
+const userGateway = new UserGateway();
 
 router.get('/:id', AuthHelper.admin, function(req, res, next) {
-    UserGateway.get(req.params.id, function(err, result) {
+    userGateway.get(req.params.id, function(err, result) {
         if (err) {
             return next(err);
         } else {
@@ -16,8 +17,9 @@ router.get('/:id', AuthHelper.admin, function(req, res, next) {
 });
 
 router.get('/', AuthHelper.admin, function(req, res, next) {
-    UserGateway.list({
+    userGateway.list({
         find: {},
+        select: undefined,
         page: req.query.page,
         pageSize: req.query.pageSize,
         sort: (function() {
@@ -37,7 +39,7 @@ router.get('/', AuthHelper.admin, function(req, res, next) {
 });
 
 router.post('/', AuthHelper.admin, function(req, res, next) {
-    UserGateway.create(req.body, function(err, result) {
+    userGateway.create(req.body, function(err, result) {
         if (err || !result) {
             return next(err);
         } else {
@@ -47,7 +49,7 @@ router.post('/', AuthHelper.admin, function(req, res, next) {
 });
 
 router.put('/:id', AuthHelper.admin, function(req, res, next) {
-    UserGateway.update(req.params.id, req.body, function(err, result) {
+    userGateway.update(req.params.id, req.body, function(err, affectedRows, result) {
         if (err) {
             return next(err);
         } else {
@@ -57,7 +59,7 @@ router.put('/:id', AuthHelper.admin, function(req, res, next) {
 });
 
 router.delete('/:id', AuthHelper.admin, function(req, res, next) {
-    UserGateway.delete(req.params.id, function(err, result) {
+    userGateway.delete(req.params.id, function(err) {
         if (err) {
             return next(err);
         } else {
