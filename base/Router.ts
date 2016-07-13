@@ -79,29 +79,28 @@ export class RouteBuilder {
     }
 }
 
+function getRouteBuilder(target: Router) {
+    if (target.routeBuilder) {
+        if (!target.hasOwnProperty('routeBuilder')) {
+            target.routeBuilder = new RouteBuilder(target.routeBuilder);
+        }
+    } else {
+        target.routeBuilder = new RouteBuilder();
+    }
+    return target.routeBuilder;
+}
+
 export function route(method: RouteMethod, name: string | RegExp) {
     return function(target: Router, propertyKey: string, descriptor: PropertyDescriptor) {
-        if (target.routeBuilder) {
-            if (!target.hasOwnProperty('routeBuilder')) {
-                target.routeBuilder = new RouteBuilder(target.routeBuilder);
-            }
-        } else {
-            target.routeBuilder = new RouteBuilder();
-        }
-        target.routeBuilder.addDefinition(propertyKey, method, name);
+        var routeBuilder = getRouteBuilder(target);
+        routeBuilder.addDefinition(propertyKey, method, name);
     }
 }
 
 export function middleware(middleware: Middleware) {
     return function(target: Router, propertyKey: string, descriptor: PropertyDescriptor) {
-        if (target.routeBuilder) {
-            if (!target.hasOwnProperty('routeBuilder')) {
-                target.routeBuilder = new RouteBuilder(target.routeBuilder);
-            }
-        } else {
-            target.routeBuilder = new RouteBuilder();
-        }
-        target.routeBuilder.addMiddleware(propertyKey, middleware);
+        var routeBuilder = getRouteBuilder(target);
+        routeBuilder.addMiddleware(propertyKey, middleware);
     }
 }
 
