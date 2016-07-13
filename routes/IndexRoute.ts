@@ -1,12 +1,8 @@
-import * as express from 'express';
+import Router, {route} from '../base/back/Router';
 
-import UserGateway from '../gateways/UserGateway';
-
-const router: express.Router = express.Router();
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
-});
-
-export default router;
+export default class IndexRoute extends Router {
+    @route('get', '/')
+    get(req, res, next) {
+        res.render('index', { title: 'Express' });
+    }
+}

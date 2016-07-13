@@ -1,10 +1,8 @@
-import * as express from 'express';
+import Router, {route} from '../base/back/Router';
 
-const router: express.Router = express.Router();
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
-});
-
-export default router;
+export default class UserRoute extends Router {
+    @route('get', '/')
+    get(req, res, next) {
+        res.send('respond with a resource');
+    }
+}
