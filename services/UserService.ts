@@ -1,12 +1,10 @@
-import * as express from 'express';
-
 import Router, {route, middleware} from '../base/back/Router';
-import Service from '../base/back/Service';
+import CrudService from '../base/back/CrudService';
 
 import AuthHelper from '../helpers/AuthHelper';
 import UserGateway from '../gateways/UserGateway';
 
-export class UserService extends Service<UserGateway> {
+export default class UserService extends CrudService<UserGateway> {
     @route('get', 'test/:id')
     @middleware(AuthHelper.admin)
     test(req, res, next) {
@@ -19,7 +17,3 @@ export class UserService extends Service<UserGateway> {
         });
     }
 }
-
-const userGateway = new UserGateway();
-var service = new UserService(userGateway);
-export default service.expressRouter;

@@ -1,14 +1,13 @@
 import * as express from 'express';
 import * as passport from 'passport';
 
-import Router, {route, middleware} from '../base/back/Router';
+import {route, middleware} from '../base/back/Router';
+import Service from '../base/back/Service';
 
 import UserGateway from '../gateways/UserGateway';
 import AuthHelper from '../helpers/AuthHelper';
 
-const userGateway = new UserGateway();
-
-export class AuthService extends Router {
+export default class AuthService extends Service<UserGateway> {
     @route('get', '/')
     get(req, res, next) {
         res.json({
@@ -37,7 +36,7 @@ export class AuthService extends Router {
     @route('post', '/impersonate')
     @middleware(AuthHelper.adminNotImpersonated)
     impersonate(req, res, next) {
-        userGateway.getByUsername(req.body.username, function(err, user) {
+        this.gateway.getByUsername(req.body.username, function(err, user) {
             if (!err && user) {
                 var adminUser = req.user;
                 req.session.regenerate(function(err) {
@@ -79,6 +78,3 @@ export class AuthService extends Router {
         });
     }
 }
-
-var service = new AuthService();
-export default service.expressRouter;
