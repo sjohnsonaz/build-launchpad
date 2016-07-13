@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as passport from 'passport';
 
-import Router, {route, middleware} from '../base/Router';
+import Router, {route, middleware} from '../base/back/Router';
 
 import UserGateway from '../gateways/UserGateway';
 import AuthHelper from '../helpers/AuthHelper';

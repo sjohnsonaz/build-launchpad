@@ -1,7 +1,7 @@
 import * as express from 'express';
 
-import Router, {route, middleware} from '../base/Router';
-import Service from '../base/Service';
+import Router, {route, middleware} from '../base/back/Router';
+import Service from '../base/back/Service';
 
 import AuthHelper from '../helpers/AuthHelper';
 import UserGateway from '../gateways/UserGateway';

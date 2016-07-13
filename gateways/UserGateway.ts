@@ -1,4 +1,4 @@
-import Gateway from '../base/Gateway';
+import Gateway from '../base/back/Gateway';
 import UserModel, {UserDocument} from '../schemas/UserModel';
 
 function buildUser(user, callback) {
