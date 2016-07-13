@@ -81,8 +81,12 @@ export class RouteBuilder {
 
 export function route(method: RouteMethod, name: string | RegExp) {
     return function(target: Router, propertyKey: string, descriptor: PropertyDescriptor) {
-        if (target.routeBuilder && !target.hasOwnProperty('routeBuilder')) {
-            target.routeBuilder = new RouteBuilder(target.routeBuilder);
+        if (target.routeBuilder) {
+            if (!target.hasOwnProperty('routeBuilder')) {
+                target.routeBuilder = new RouteBuilder(target.routeBuilder);
+            }
+        } else {
+            target.routeBuilder = new RouteBuilder();
         }
         target.routeBuilder.addDefinition(propertyKey, method, name);
     }
