@@ -1,71 +1,85 @@
 import * as express from 'express';
 
+import Router, {route, middleware} from '../base/Router';
+
 import AuthHelper from '../helpers/AuthHelper';
 import UserGateway from '../gateways/UserGateway';
 
-const router: express.Router = express.Router();
 const userGateway = new UserGateway();
 
-router.get('/:id', AuthHelper.admin, function(req, res, next) {
-    userGateway.get(req.params.id, function(err, result) {
-        if (err) {
-            return next(err);
-        } else {
-            res.json(result);
-        }
-    });
-});
-
-router.get('/', AuthHelper.admin, function(req, res, next) {
-    userGateway.list({
-        find: {},
-        select: undefined,
-        page: req.query.page,
-        pageSize: req.query.pageSize,
-        sort: (function() {
-            if (req.query.sortedColumn) {
-                var output = {};
-                output[req.query.sortedColumn] = (req.query.sortedDirection === undefined || req.query.sortedDirection) ? 1 : -1;
-                return output;
+export class UserService extends Router {
+    @route('get', '/:id')
+    @middleware(AuthHelper.admin)
+    get(req, res, next) {
+        userGateway.get(req.params.id, function(err, result) {
+            if (err) {
+                return next(err);
+            } else {
+                res.json(result);
             }
-        })()
-    }, function(err, result) {
-        if (err) {
-            return next(err);
-        } else {
-            res.json(result);
-        }
-    });
-});
+        });
+    }
 
-router.post('/', AuthHelper.admin, function(req, res, next) {
-    userGateway.create(req.body, function(err, result) {
-        if (err || !result) {
-            return next(err);
-        } else {
-            res.json(result._id);
-        }
-    });
-});
+    @route('get', '/')
+    @middleware(AuthHelper.admin)
+    list(req, res, next) {
+        userGateway.list({
+            find: {},
+            select: undefined,
+            page: req.query.page,
+            pageSize: req.query.pageSize,
+            sort: (function() {
+                if (req.query.sortedColumn) {
+                    var output = {};
+                    output[req.query.sortedColumn] = (req.query.sortedDirection === undefined || req.query.sortedDirection) ? 1 : -1;
+                    return output;
+                }
+            })()
+        }, function(err, result) {
+            if (err) {
+                return next(err);
+            } else {
+                res.json(result);
+            }
+        });
+    }
 
-router.put('/:id', AuthHelper.admin, function(req, res, next) {
-    userGateway.update(req.params.id, req.body, function(err, affectedRows, result) {
-        if (err) {
-            return next(err);
-        } else {
-            res.json(result.ok);
-        }
-    });
-});
+    @route('post', '/')
+    @middleware(AuthHelper.admin)
+    post(req, res, next) {
+        userGateway.create(req.body, function(err, result) {
+            if (err || !result) {
+                return next(err);
+            } else {
+                res.json(result._id);
+            }
+        });
+    }
 
-router.delete('/:id', AuthHelper.admin, function(req, res, next) {
-    userGateway.delete(req.params.id, function(err) {
-        if (err) {
-            return next(err);
-        } else {
-            res.json(true);
-        }
-    });
-});
+    @route('put', '/:id')
+    @middleware(AuthHelper.admin)
+    put(req, res, next) {
+        userGateway.update(req.params.id, req.body, function(err, affectedRows, result) {
+            if (err) {
+                return next(err);
+            } else {
+                res.json(result.ok);
+            }
+        });
+    }
 
-export default router;
+    @route('delete', '/:id')
+    @middleware(AuthHelper.admin)
+    delete(req, res, next) {
+        userGateway.delete(req.params.id, function(err) {
+            if (err) {
+                return next(err);
+            } else {
+                res.json(true);
+            }
+        });
+    }
+}
+
+var service = new UserService();
+export default service.expressRouter;
