@@ -91,14 +91,15 @@ function getRouteBuilder(target: Router) {
 }
 
 export function route(method: RouteMethod, name: string | RegExp) {
-    return function(target: Router, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
+        console.log(target);
         var routeBuilder = getRouteBuilder(target);
         routeBuilder.addDefinition(propertyKey, method, name);
     }
 }
 
 export function middleware(middleware: Middleware) {
-    return function(target: Router, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
         routeBuilder.addMiddleware(propertyKey, middleware);
     }
