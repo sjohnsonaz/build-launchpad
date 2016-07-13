@@ -85,7 +85,8 @@ if (app.get('env') === 'development') {
         if (res.locals.isService) {
             res.json({
                 message: err.message,
-                error: err
+                error: err,
+                stack: err.stack
             });
         } else {
             res.render('error', {

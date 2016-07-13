@@ -45,6 +45,9 @@ export class RouteBuilder {
                 var routeName = this.routeNames[index];
                 var middleware = routeName.middleware;
                 var method = controller[index];
+                if (method) {
+                    method = method.bind(controller);
+                }
                 switch (routeName.method) {
                     case 'all':
                         router.all(routeName.name, ...middleware, method);
