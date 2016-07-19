@@ -2,7 +2,7 @@ import {observable} from 'mobx';
 import Connection, {ListQuery} from './Connection';
 import Model from './Model';
 
-export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>> {
+export default class Store<T, U extends Connection<T, V>, V extends Model<T, any, U>> {
     connection: U;
     modelConstructor: new (data?: Object, connection?: U) => V;
     @observable listLoading: boolean = false;
@@ -19,13 +19,13 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
         var self = this;
         this.listLoading = true;
         this.listLoaded = false;
-        this.connection.list(query, function (data) {
+        this.connection.list(query, function(data) {
             self.listLoading = false;
             self.listLoaded = true;
             if (success) {
                 success(Store.objectDictionaryToModelArray(data, self.modelConstructor, self.connection), data.length);
             }
-        }, function (data) {
+        }, function(data) {
             self.listLoading = false;
             self.listLoaded = false;
             if (error) {
@@ -38,13 +38,13 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
         var self = this;
         this.getLoading = true;
         this.getLoaded = false;
-        this.connection.get(id, function (data) {
+        this.connection.get(id, function(data) {
             self.getLoading = false;
             self.getLoaded = true;
             if (success) {
                 success(Store.objectToModel(data, self.modelConstructor, self.connection));
             }
-        }, function (data) {
+        }, function(data) {
             self.getLoading = false;
             self.getLoaded = false;
             if (error) {
@@ -57,7 +57,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
         return new this.modelConstructor(data, this.connection);
     }
 
-    static objectArrayToModelArray<T extends Model<any, U>, U extends Connection<any, T>>(data: Array<Object>, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
+    static objectArrayToModelArray<T extends Model<any, any, U>, U extends Connection<any, T>>(data: Array<Object>, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
         var results: Array<T> = [];
         if (data) {
             for (var index = 0, length = data.length; index < length; index++) {
@@ -68,7 +68,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
         return results;
     }
 
-    static objectDictionaryToModelArray<T extends Model<any, U>, U extends Connection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
+    static objectDictionaryToModelArray<T extends Model<any, any, U>, U extends Connection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
         var results: Array<T> = [];
         if (data) {
             for (var index in data) {
@@ -81,7 +81,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
         return results;
     }
 
-    static objectToModel<T extends Model<any, any>, U extends Connection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): T {
+    static objectToModel<T extends Model<any, any, U>, U extends Connection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): T {
         if (data) {
             return new model(data, connection);
         } else {

@@ -42,25 +42,25 @@ export default class Model<T, U extends IModel<T>, V extends Connection<T, U>> i
         if (this.connection) {
             this.saving = true;
             if (this.Id) {
-                this.connection.put(this.unwrap(), function (data) {
+                this.connection.put(this.unwrap(), function(data) {
                     self.saving = false;
                     if (success) {
                         success(data);
                     }
-                }, function (data) {
+                }, function(data) {
                     self.saving = false;
                     if (error) {
                         error(data);
                     }
                 });
             } else {
-                this.connection.post(this.unwrap(), function (data) {
+                this.connection.post(this.unwrap(), function(data) {
                     self.Id = data;
                     self.saving = false;
                     if (success) {
                         success(data);
                     }
-                }, function (data) {
+                }, function(data) {
                     self.saving = false;
                     if (error) {
                         error(data);
@@ -77,12 +77,12 @@ export default class Model<T, U extends IModel<T>, V extends Connection<T, U>> i
         if (this.connection) {
             if (this.Id) {
                 this.deleting = true;
-                this.connection.delete(this.Id, function (data) {
+                this.connection.delete(this.Id, function(data) {
                     self.deleting = false;
                     if (success) {
                         success(data);
                     }
-                }, function (data) {
+                }, function(data) {
                     self.deleting = false;
                     if (error) {
                         error(data);

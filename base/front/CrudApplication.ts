@@ -16,7 +16,7 @@ export enum Operation {
     Delete
 }
 
-export default class CrudApplication<T extends CrudStores<U>, U extends Store<any, any, V>, V extends Model<any, any>> extends Application<T> {
+export default class CrudApplication<T extends CrudStores<U>, U extends Store<any, any, V>, V extends Model<any, any, any>> extends Application<T> {
     @observable items: Array<V> = [];
     @observable item: V;
     @observable operation: Operation = Operation.Get;
@@ -101,7 +101,7 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
                     this.item = undefined;
                     this.operation = Operation.Get;
                     this.refreshList();
-                }, function (error) {
+                }, function(error) {
                 });
                 break;
             case Operation.Edit:
@@ -109,7 +109,7 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
                     this.item = undefined;
                     this.operation = Operation.Get;
                     this.refreshList();
-                }, function (error) {
+                }, function(error) {
                 });
                 break;
             case Operation.Delete:
@@ -117,7 +117,7 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
                     this.item = undefined;
                     this.operation = Operation.Get;
                     this.refreshList();
-                }, function (error) {
+                }, function(error) {
                 });
                 break;
         }

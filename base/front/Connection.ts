@@ -5,7 +5,7 @@ export interface ListQuery {
     offset?: number;
     limit?: number;
 }
- 
+
 class Connection<T, U extends IModel<T>> {
     base: string;
 

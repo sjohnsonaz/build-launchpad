@@ -1,4 +1,4 @@
-﻿import {observable} from 'mobx';
+import {observable} from 'mobx';
 import Connection from './Connection';
 import Store from './Store';
 
