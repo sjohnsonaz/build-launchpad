@@ -1,31 +1,32 @@
-﻿import {observable} from 'mobx';
+import {observable} from 'mobx';
 
+import {IModel} from './IModel';
 import Connection from './Connection';
 
-export default class Model<T, U extends Connection<T, Model<T, U>>> {
+export default class Model<T, U extends IModel<T>, V extends Connection<T, U>> implements IModel<T> {
     Id: T;
 
-    baseData: Object;
-    connection: U;
+    baseData: U;
+    connection: V;
     @observable saving: boolean;
     @observable deleting: boolean;
 
-    constructor(data?: Object, connection?: U) {
-        this.wrap(data || {});
+    constructor(data?: U, connection?: V) {
+        this.wrap(data || ({} as U));
         if (connection) {
             this.connection = connection;
         }
     }
 
-    wrap(data: any) {
+    wrap(data: U) {
         this.baseData = data;
         this.Id = data.Id;
     }
 
-    unwrap(): any {
+    unwrap(): U {
         return {
             Id: this.Id
-        }
+        } as U;
     }
 
     revert() {
@@ -93,13 +94,15 @@ export default class Model<T, U extends Connection<T, Model<T, U>>> {
         }
     }
 
-    static wrapArray<T extends Model<any, any>>(values, model: new (data) => T, indexObject?: ModelIndex<T>) {
-        var output: T[] = [];
+    static wrapArray<T extends number, U extends IModel<T>>(values, model: new (data) => U, indexObject?: ModelNumberIndex<U>);
+    static wrapArray<T extends string, U extends IModel<T>>(values, model: new (data) => U, indexObject?: ModelStringIndex<U>);
+    static wrapArray<T, U extends IModel<T>>(values, model: new (data) => U, indexObject?: Object) {
+        var output: U[] = [];
         if (values) {
             for (var index = 0, length = values.length; index < length; index++) {
                 var wrappedValue = new model(values[index]);
                 if (indexObject) {
-                    indexObject[wrappedValue.Id] = wrappedValue;
+                    indexObject[wrappedValue.Id as any] = wrappedValue;
                 }
                 output.push(wrappedValue);
             }
@@ -107,7 +110,7 @@ export default class Model<T, U extends Connection<T, Model<T, U>>> {
         return output;
     }
 
-    static unwrapArray<T extends Model<any, any>>(values: T[]) {
+    static unwrapArray<T extends Model<any, any, any>>(values: T[]) {
         var output = [];
         if (values) {
             for (var index = 0, length = values.length; index < length; index++) {
@@ -118,6 +121,10 @@ export default class Model<T, U extends Connection<T, Model<T, U>>> {
     }
 }
 
-export interface ModelIndex<T extends Model<any, any>> {
+export interface ModelNumberIndex<T extends IModel<number>> {
     [index: number]: T;
+}
+
+export interface ModelStringIndex<T extends IModel<string>> {
+    [index: string]: T;
 }

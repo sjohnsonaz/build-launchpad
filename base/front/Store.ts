@@ -1,4 +1,4 @@
-﻿import {observable} from 'mobx';
+import {observable} from 'mobx';
 import Connection, {ListQuery} from './Connection';
 import Model from './Model';
 
@@ -15,7 +15,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
         this.modelConstructor = modelConstructor;
     }
 
-    list(query?: ListQuery, success?: (n: Array<V>) => any, error?: (n: Error) => any) {
+    list(query?: ListQuery, success?: (data: Array<V>, count: number) => any, error?: (n: Error) => any) {
         var self = this;
         this.listLoading = true;
         this.listLoaded = false;
@@ -23,7 +23,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, U>>
             self.listLoading = false;
             self.listLoaded = true;
             if (success) {
-                success(Store.objectDictionaryToModelArray(data, self.modelConstructor, self.connection));
+                success(Store.objectDictionaryToModelArray(data, self.modelConstructor, self.connection), data.length);
             }
         }, function (data) {
             self.listLoading = false;

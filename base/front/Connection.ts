@@ -1,12 +1,12 @@
-﻿import 'whatwg-fetch';
-import Model from './Model';
+import 'whatwg-fetch';
+import {IModel} from './IModel';
 
 export interface ListQuery {
     offset?: number;
     limit?: number;
 }
-
-class Connection<T, U extends Model<T, Connection<T, U>>> {
+ 
+class Connection<T, U extends IModel<T>> {
     base: string;
 
     constructor(base: string, route?: string) {
@@ -24,12 +24,12 @@ class Connection<T, U extends Model<T, Connection<T, U>>> {
         }
     }
 
-    json(response: Response): Promise<any> {
+    json<V>(response: Response): Promise<V> {
         return response.json();
     }
 
 
-    list(query: ListQuery, success: (n: Array<Object>) => any, error: (n: Error) => any) {
+    list(query: ListQuery, success: (data: U[]) => any, error: (data: Error) => any) {
         fetch(this.base + Connection.objectToQueryString(query || {}))
             .then(this.status)
             .then(this.json)
@@ -37,7 +37,7 @@ class Connection<T, U extends Model<T, Connection<T, U>>> {
             .catch(error);
     }
 
-    get(id: T, success: (n: Object) => any, error: (n: Error) => any) {
+    get(id: T, success: (data: U) => any, error: (data: Error) => any) {
         fetch(this.base + id)
             .then(this.status)
             .then(this.json)
@@ -45,7 +45,7 @@ class Connection<T, U extends Model<T, Connection<T, U>>> {
             .catch(error);
     }
 
-    post(data: Object, success: (n: T) => any, error: (n: Error) => any) {
+    post(data: Object, success: (data: T) => any, error: (data: Error) => any) {
         fetch(this.base, {
             method: 'POST',
             body: JSON.stringify(data),
@@ -60,7 +60,7 @@ class Connection<T, U extends Model<T, Connection<T, U>>> {
             .catch(error);
     }
 
-    put(data: Object, success: (n: boolean) => any, error: (n: Error) => any) {
+    put(data: Object, success: (data: boolean) => any, error: (data: Error) => any) {
         fetch(this.base, {
             method: 'PUT',
             body: JSON.stringify(data),
@@ -75,7 +75,7 @@ class Connection<T, U extends Model<T, Connection<T, U>>> {
             .catch(error);
     }
 
-    delete(id: T, success: (n: boolean) => any, error: (n: Error) => any) {
+    delete(id: T, success: (data: boolean) => any, error: (data: Error) => any) {
         fetch(this.base + id, {
             method: 'DELETE'
         })

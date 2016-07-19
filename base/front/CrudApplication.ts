@@ -1,8 +1,9 @@
-﻿import {observable, computed} from 'mobx';
+import {observable, computed} from 'mobx';
 
 import Application, {Stores} from './Application';
 import Store from './Store';
 import Model from './Model';
+import DataSource from './DataSource';
 
 export interface CrudStores<T extends Store<any, any, any>> extends Stores {
     main: T
@@ -19,27 +20,30 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
     @observable items: Array<V> = [];
     @observable item: V;
     @observable operation: Operation = Operation.Get;
+    dataSource: DataSource<V>;
 
-    // search
-    @observable filteredItems = [];
-
-    @computed get suppliersLength() {
-        return this.items.length;
+    private _slideIndex: number = Operation.Get;
+    @computed get slideIndex() {
+        if (this.operation !== Operation.Delete) {
+            this._slideIndex = this.operation;
+        }
+        return this._slideIndex;
     }
 
-    constructor(stores: T) {
+    constructor(stores: T, dataSource?: DataSource<V>) {
         super(stores);
-        this.refreshList();
+        this.dataSource = dataSource || new DataSource((page, pageSize, sortedColumn, sortedDirection, success, error) => {
+            this.stores.main.list({}, (data, count) => {
+                success(data, count);
+            }, (data) => {
+                error();
+            });
+        });
+        this.dataSource.run();
     }
 
-    refreshList() {
-        var self = this;
-        this.stores.main.list({}, function (data) {
-            self.items = data;
-            self.filteredItems = [];
-        }, function (data) {
-            self.items.length = 0;
-        });
+    refreshList(preservePage: boolean = false) {
+        this.dataSource.run(preservePage);
     }
 
     clearOperation() {
@@ -65,11 +69,8 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
 
     delete(item: V) {
         this.clearOperation();
-        this.stores.main.get(item.Id, (item) => {
-            this.operation = Operation.Delete;
-            this.item = item;
-        }, (error) => {
-        });
+        this.operation = Operation.Delete;
+        this.item = item;
     }
 
     cancel() {
@@ -122,7 +123,10 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
         }
     }
 
-    filterSuppliers(key: string, term: string) {
+    // search
+    @observable filteredItems = [];
+
+    filterItems(key: string, term: string) {
         this.filteredItems = this.items.filter((item) => {
             return item[key].toLowerCase().includes(term.toLowerCase())
         });

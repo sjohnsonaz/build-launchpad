@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 
 import config from '../config';
 
-import {IUser} from '../models/IUser';
+import {IUser} from '../interfaces/IUser';
 
 //import {testPassword} from '../lib/Validation';
 
