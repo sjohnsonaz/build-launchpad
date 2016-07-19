@@ -1,7 +1,5 @@
 import {observable, computed} from 'mobx';
 
-import Model from './Model';
-
 export enum SortDirection {
     None = 0,
     Asc,
@@ -19,7 +17,7 @@ export interface DataSortParams {
     error?: boolean;
 }
 
-export class DataResult<T extends Model<any, any, any>> {
+export class DataResult<T> {
     data: T[];
     count: number;
     constructor(data: T[], count: number) {
@@ -28,7 +26,7 @@ export class DataResult<T extends Model<any, any, any>> {
     }
 }
 
-export interface RefreshCallback<T extends Model<any, any, any>> {
+export interface RefreshCallback<T> {
     (
         page: number,
         pageSize: number,
@@ -39,7 +37,7 @@ export interface RefreshCallback<T extends Model<any, any, any>> {
     ): void;
 }
 
-export interface SuccessCallback<T extends Model<any, any, any>> {
+export interface SuccessCallback<T> {
     (data: T[], count: number): void;
 }
 
@@ -47,7 +45,7 @@ export interface ErrorCallback {
     (): void;
 }
 
-export default class DataSource<T extends Model<any, any, any>> {
+export default class DataSource<T> {
     @observable pageSize: number;
     @observable page: number;
     @observable pagerSize: number;
@@ -122,7 +120,7 @@ export default class DataSource<T extends Model<any, any, any>> {
         this.lockRefresh = lockRefresh;
     };
 
-    static pageArray<T extends Model<any, any, any>>(results: Array<any>, page: number, pageSize: number, sortedColumn: string, sortedDirection: SortDirection): DataResult<T> {
+    static pageArray<T>(results: Array<any>, page: number, pageSize: number, sortedColumn: string, sortedDirection: SortDirection): DataResult<T> {
         if (results && sortedColumn) {
             results.sort(function(a, b) {
                 a = (a[sortedColumn] || '').toString();
