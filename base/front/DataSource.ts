@@ -95,7 +95,7 @@ export default class DataSource<T> {
         var sortedColumn = sortedColumn;
         var sortedDirection = sortedDirection;
         (() => {
-            this.refreshData(page, pageSize, sortedColumn, sortedDirection, (data: Array<T>, count: number) => {
+            this.refreshData(page, pageSize, sortedColumn, sortedDirection, (data: T[], count: number) => {
                 if (runID == this.runCount) {
                     this.activeRows = data;
                     this.rowCount = count;
@@ -120,19 +120,19 @@ export default class DataSource<T> {
         this.lockRefresh = lockRefresh;
     };
 
-    static pageArray<T>(results: Array<any>, page: number, pageSize: number, sortedColumn: string, sortedDirection: SortDirection): DataResult<T> {
+    static pageArray<T>(results: T[], page: number, pageSize: number, sortedColumn: string, sortedDirection: SortDirection): DataResult<T> {
         if (results && sortedColumn) {
             results.sort(function(a, b) {
-                a = (a[sortedColumn] || '').toString();
-                b = (b[sortedColumn] || '').toString();
+                var aProperty = (a[sortedColumn] || '').toString();
+                var bProperty = (b[sortedColumn] || '').toString();
 
                 var ax = [],
                     bx = [];
 
-                a.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
+                aProperty.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
                     ax.push([$1 || Infinity, $2 || ""])
                 });
-                b.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
+                bProperty.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
                     bx.push([$1 || Infinity, $2 || ""])
                 });
 

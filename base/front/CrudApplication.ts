@@ -17,7 +17,7 @@ export enum Operation {
 }
 
 export default class CrudApplication<T extends CrudStores<U>, U extends Store<any, any, V>, V extends Model<any, any, any>> extends Application<T> {
-    @observable items: Array<V> = [];
+    @observable items: V[] = [];
     @observable item: V;
     @observable operation: Operation = Operation.Get;
     dataSource: DataSource<V>;
@@ -32,7 +32,7 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
 
     constructor(stores: T, dataSource?: DataSource<V>) {
         super(stores);
-        this.dataSource = dataSource || new DataSource((page, pageSize, sortedColumn, sortedDirection, success, error) => {
+        this.dataSource = dataSource || new DataSource<V>((page, pageSize, sortedColumn, sortedDirection, success, error) => {
             this.stores.main.list({}, (data, count) => {
                 success(data, count);
             }, (data) => {
