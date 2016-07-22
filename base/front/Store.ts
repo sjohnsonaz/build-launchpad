@@ -1,8 +1,9 @@
 import {observable} from 'mobx';
-import Connection, {ListQuery} from './Connection';
+import {IListQuery} from './IListQuery';
+import CrudConnection from './CrudConnection';
 import Model from './Model';
 
-export default class Store<T, U extends Connection<T, V>, V extends Model<T, any, U>> {
+export default class Store<T, U extends CrudConnection<T, V>, V extends Model<T, any, U>> {
     connection: U;
     modelConstructor: new (data?: Object, connection?: U) => V;
     @observable listLoading: boolean = false;
@@ -15,7 +16,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, any
         this.modelConstructor = modelConstructor;
     }
 
-    list(query?: ListQuery, success?: (data: Array<V>, count: number) => any, error?: (n: Error) => any) {
+    list(query?: IListQuery, success?: (data: Array<V>, count: number) => any, error?: (n: Error) => any) {
         var self = this;
         this.listLoading = true;
         this.listLoaded = false;
@@ -57,7 +58,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, any
         return new this.modelConstructor(data, this.connection);
     }
 
-    static objectArrayToModelArray<T extends Model<any, any, U>, U extends Connection<any, T>>(data: Array<Object>, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
+    static objectArrayToModelArray<T extends Model<any, any, U>, U extends CrudConnection<any, T>>(data: Array<Object>, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
         var results: Array<T> = [];
         if (data) {
             for (var index = 0, length = data.length; index < length; index++) {
@@ -68,7 +69,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, any
         return results;
     }
 
-    static objectDictionaryToModelArray<T extends Model<any, any, U>, U extends Connection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
+    static objectDictionaryToModelArray<T extends Model<any, any, U>, U extends CrudConnection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): Array<T> {
         var results: Array<T> = [];
         if (data) {
             for (var index in data) {
@@ -81,7 +82,7 @@ export default class Store<T, U extends Connection<T, V>, V extends Model<T, any
         return results;
     }
 
-    static objectToModel<T extends Model<any, any, U>, U extends Connection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): T {
+    static objectToModel<T extends Model<any, any, U>, U extends CrudConnection<any, T>>(data: Object, model: new (data?: Object, connection?: U) => T, connection?: U): T {
         if (data) {
             return new model(data, connection);
         } else {

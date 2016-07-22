@@ -1,12 +1,6 @@
 import 'whatwg-fetch';
-import {IModel} from './IModel';
 
-export interface ListQuery {
-    offset?: number;
-    limit?: number;
-}
-
-class Connection<T, U extends IModel<T>> {
+class Connection {
     base: string;
 
     constructor(base: string, route?: string) {
@@ -28,57 +22,8 @@ class Connection<T, U extends IModel<T>> {
         return response.json();
     }
 
-
-    list(query: ListQuery, success: (data: U[]) => any, error: (data: Error) => any) {
-        fetch(this.base + Connection.objectToQueryString(query || {}))
-            .then(this.status)
-            .then(this.json)
-            .then(success)
-            .catch(error);
-    }
-
-    get(id: T, success: (data: U) => any, error: (data: Error) => any) {
-        fetch(this.base + id)
-            .then(this.status)
-            .then(this.json)
-            .then(success)
-            .catch(error);
-    }
-
-    post(data: Object, success: (data: T) => any, error: (data: Error) => any) {
-        fetch(this.base, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(this.status)
-            .then(this.json)
-            .then(success)
-            .catch(error);
-    }
-
-    put(data: Object, success: (data: boolean) => any, error: (data: Error) => any) {
-        fetch(this.base, {
-            method: 'PUT',
-            body: JSON.stringify(data),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(this.status)
-            .then(this.json)
-            .then(success)
-            .catch(error);
-    }
-
-    delete(id: T, success: (data: boolean) => any, error: (data: Error) => any) {
-        fetch(this.base + id, {
-            method: 'DELETE'
-        })
+    call<T>(url: string | Request, init: RequestInit, success: (data: T) => any, error: (data: Error) => any) {
+        fetch(url, init || {})
             .then(this.status)
             .then(this.json)
             .then(success)
