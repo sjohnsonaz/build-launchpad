@@ -51,7 +51,7 @@ export default class DataSource<T> {
     @observable pagerSize: number;
     @observable sortedColumn: string;
     @observable sortedDirection: SortDirection = SortDirection.None;
-    @observable activeRows: Array<any> = [];
+    @observable activeRows: T[] = [];
     @observable rowCount: number = 0;
     @observable error: boolean = false;
 

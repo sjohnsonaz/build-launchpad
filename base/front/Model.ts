@@ -1,15 +1,17 @@
 import {observable} from 'mobx';
 
 import {IModel} from './IModel';
+import {ISelectable} from './ISelectable';
 import Connection from './Connection';
 
-export default class Model<T, U extends IModel<T>, V extends Connection<T, U>> implements IModel<T> {
+export default class Model<T, U extends IModel<T>, V extends Connection<T, U>> implements IModel<T>, ISelectable {
     Id: T;
 
     baseData: U;
     connection: V;
     @observable saving: boolean;
     @observable deleting: boolean;
+    @observable selected: boolean;
 
     constructor(data?: U, connection?: V) {
         this.wrap(data || ({} as U));
