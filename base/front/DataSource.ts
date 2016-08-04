@@ -121,33 +121,31 @@ export default class DataSource<T> {
     };
 
     static pageArray<T>(results: T[], page: number, pageSize: number, sortedColumn: string, sortedDirection: SortDirection): DataResult<T> {
-        if (results && sortedColumn) {
-            results.sort(function(a, b) {
-                var aProperty = (a[sortedColumn] || '').toString();
-                var bProperty = (b[sortedColumn] || '').toString();
+        if (results) {
+            if (sortedColumn) {
+                results.sort(function(a, b) {
+                    var aProperty = (a[sortedColumn] || '').toString();
+                    var bProperty = (b[sortedColumn] || '').toString();
 
-                var ax = [],
-                    bx = [];
+                    var ax = [],
+                        bx = [];
 
-                aProperty.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
-                    ax.push([$1 || Infinity, $2 || ""])
+                    aProperty.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
+                        ax.push([$1 || Infinity, $2 || ""]);
+                    });
+                    bProperty.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
+                        bx.push([$1 || Infinity, $2 || ""]);
+                    });
+
+                    while (ax.length && bx.length) {
+                        var an = ax.shift();
+                        var bn = bx.shift();
+                        var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
+                        if (nn) return nn;
+                    }
+
+                    return ax.length - bx.length;
                 });
-                bProperty.replace(/(\d+)|(\D+)/g, function(_, $1, $2) {
-                    bx.push([$1 || Infinity, $2 || ""])
-                });
-
-                while (ax.length && bx.length) {
-                    var an = ax.shift();
-                    var bn = bx.shift();
-                    var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
-                    if (nn) return nn;
-                }
-
-                return ax.length - bx.length;
-            });
-
-            if (sortedDirection === undefined || sortedDirection === SortDirection.None) {
-                sortedDirection = SortDirection.Asc;
             }
 
             if (sortedDirection === SortDirection.Desc) {

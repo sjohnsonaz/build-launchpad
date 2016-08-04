@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 
-class Connection {
+export default class Connection {
     base: string;
 
     constructor(base: string, route?: string) {
@@ -48,5 +48,3 @@ class Connection {
         return '?' + values.join('&');
     }
 }
-
-export default Connection;

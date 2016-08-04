@@ -1,10 +1,8 @@
-import 'whatwg-fetch';
 import {IModel} from './IModel';
 import {IListQuery} from './IListQuery';
 import Connection from './Connection';
 
 export default class CrudConnection<T, U extends IModel<T>> extends Connection {
-
     list(query: IListQuery, success: (data: U[]) => any, error: (data: Error) => any) {
         this.call(this.base + Connection.objectToQueryString(query || {}), {}, success, error);
     }
@@ -13,7 +11,7 @@ export default class CrudConnection<T, U extends IModel<T>> extends Connection {
         this.call(this.base + id, {}, success, error);
     }
 
-    post(data: Object, success: (data: T) => any, error: (data: Error) => any) {
+    post(data: U, success: (data: T) => any, error: (data: Error) => any) {
         this.call(this.base, {
             method: 'POST',
             body: JSON.stringify(data),
@@ -24,7 +22,7 @@ export default class CrudConnection<T, U extends IModel<T>> extends Connection {
         }, success, error);
     }
 
-    put(data: Object, success: (data: boolean) => any, error: (data: Error) => any) {
+    put(data: U, success: (data: boolean) => any, error: (data: Error) => any) {
         this.call(this.base, {
             method: 'PUT',
             body: JSON.stringify(data),

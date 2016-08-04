@@ -1,6 +1,6 @@
 import {observable} from 'mobx';
-import {IListQuery} from './IListQuery';
 import CrudConnection from './CrudConnection';
+import {IListQuery} from './IListQuery';
 import Model from './Model';
 
 export default class Store<T, U extends CrudConnection<T, V>, V extends Model<T, any, U>> {

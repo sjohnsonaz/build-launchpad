@@ -22,6 +22,18 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
     @observable operation: Operation = Operation.Get;
     dataSource: DataSource<V>;
 
+    @computed get selectedItems() {
+        var activeRows = this.dataSource.activeRows;
+        var selected: V[] = [];
+        for (var index = 0, length = activeRows.length; index < length; index++) {
+            var item = activeRows[index];
+            if (item.selected) {
+                selected.push(item);
+            }
+        }
+        return selected;
+    }
+
     private _slideIndex: number = Operation.Get;
     @computed get slideIndex() {
         if (this.operation !== Operation.Delete) {
@@ -46,6 +58,14 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
         this.dataSource.run(preservePage);
     }
 
+    clearSelection() {
+        var selectedItems = this.selectedItems;
+        for (var index = 0, length = selectedItems.length; index < length; index++) {
+            var item = selectedItems[index];
+            item.selected = false;
+        }
+    }
+
     clearOperation() {
         if (this.operation !== Operation.Get || this.item) {
             this.cancel();
@@ -68,7 +88,7 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
     }
 
     delete(item: V) {
-        this.clearOperation();
+        // We can delete from Get or Edit, so we do not clear operation here.
         this.operation = Operation.Delete;
         this.item = item;
     }
@@ -79,19 +99,23 @@ export default class CrudApplication<T extends CrudStores<U>, U extends Store<an
                 // TODO: Remove revert?
                 //this.item.revert();
                 this.item = undefined;
+                this.operation = Operation.Get;
                 break;
             case Operation.Edit:
                 // TODO: Remove revert?
                 //this.item.revert();
+                this.operation = Operation.Get;
                 this.item = undefined;
                 break;
             case Operation.Delete:
-                this.item = undefined;
+                if (this.slideIndex === 0) {
+                    this.item = undefined;
+                }
+                this.operation = this.slideIndex;
                 break;
             default:
                 break;
         }
-        this.operation = Operation.Get;
     }
 
     confirm() {

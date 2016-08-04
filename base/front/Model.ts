@@ -3,40 +3,32 @@ import {observable} from 'mobx';
 import {IModel} from './IModel';
 import {ISelectable} from './ISelectable';
 import CrudConnection from './CrudConnection';
+import QueryModel from './QueryModel';
 
-export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U>> implements IModel<T>, ISelectable {
+export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U>> extends QueryModel<U> implements IModel<T>, ISelectable {
     Id: T;
 
-    baseData: U;
     connection: V;
     @observable saving: boolean;
     @observable deleting: boolean;
-    @observable selected: boolean;
+    @observable selected;
 
     constructor(data?: U, connection?: V) {
-        this.wrap(data || ({} as U));
+        super(data);
         if (connection) {
             this.connection = connection;
         }
     }
 
     wrap(data: U) {
-        this.baseData = data;
+        super.wrap(data);
         this.Id = data.Id;
     }
 
     unwrap(): U {
-        return {
-            Id: this.Id
-        } as U;
-    }
-
-    revert() {
-        this.wrap(this.baseData);
-    }
-
-    update() {
-        this.baseData = this.unwrap();
+        var output = super.unwrap();
+        output.Id = this.Id;
+        return output;
     }
 
     save(success: (n: T | boolean) => any, error: (n: Error) => any) {
@@ -96,10 +88,10 @@ export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U
         }
     }
 
-    static wrapArray<T extends number, U extends IModel<T>>(values, model: new (data) => U, indexObject?: ModelNumberIndex<U>);
-    static wrapArray<T extends string, U extends IModel<T>>(values, model: new (data) => U, indexObject?: ModelStringIndex<U>);
-    static wrapArray<T, U extends IModel<T>>(values, model: new (data) => U, indexObject?: Object) {
-        var output: U[] = [];
+    static wrapArray<T extends number, U extends IModel<T>, V extends Model<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: ModelNumberIndex<U>): V[];
+    static wrapArray<T extends string, U extends IModel<T>, V extends Model<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: ModelStringIndex<U>): V[];
+    static wrapArray<T, U extends IModel<T>, V extends Model<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: Object): V[] {
+        var output: V[] = [];
         if (values) {
             for (var index = 0, length = values.length; index < length; index++) {
                 var wrappedValue = new model(values[index]);
@@ -112,14 +104,10 @@ export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U
         return output;
     }
 
-    static unwrapArray<T extends Model<any, any, any>>(values: T[]) {
-        var output = [];
-        if (values) {
-            for (var index = 0, length = values.length; index < length; index++) {
-                output.push(values[index].unwrap());
-            }
-        }
-        return output;
+    static unwrapArray<T, U extends IModel<T>, V extends Model<T, U, any>>(values: V[]) {
+        return values.map(function(value: V, index: number, array: V[]) {
+            return value.unwrap();
+        });
     }
 }
 
