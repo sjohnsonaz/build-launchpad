@@ -1,6 +1,6 @@
-import {observable} from 'mobx';
+﻿import {IQueryModel} from '../interfaces/IQueryModel';
 
-export default class QueryModel<T> {
+export default class QueryModel<T> implements IQueryModel<T> {
     baseData: T;
 
     constructor(data?: T) {

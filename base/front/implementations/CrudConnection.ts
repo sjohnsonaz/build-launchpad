@@ -1,9 +1,11 @@
-import {IModel} from './IModel';
-import {IListQuery} from './IListQuery';
+﻿import {IData} from '../interfaces/IData';
+import {IListQuery} from '../interfaces/IListQuery';
+import {IListResult} from '../interfaces/IListResult';
+import {ICrudConnection} from '../interfaces/ICrudConnection';
 import Connection from './Connection';
 
-export default class CrudConnection<T, U extends IModel<T>> extends Connection {
-    list(query: IListQuery, success: (data: U[]) => any, error: (data: Error) => any) {
+export default class CrudConnection<T, U extends IData<T>, V extends IListQuery> extends Connection implements ICrudConnection<T, U, V> {
+    list(query: V, success: (data: IListResult<U>) => any, error: (data: Error) => any) {
         this.call(this.base + Connection.objectToQueryString(query || {}), {}, success, error);
     }
 

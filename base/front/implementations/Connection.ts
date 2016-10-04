@@ -1,6 +1,7 @@
-import 'whatwg-fetch';
+﻿import 'whatwg-fetch';
+import {IConnection} from '../interfaces/IConnection';
 
-export default class Connection {
+export default class Connection implements IConnection {
     base: string;
 
     constructor(base: string, route?: string) {
@@ -40,7 +41,7 @@ export default class Connection {
                     for (var index = 0, length = value.length; index < length; index++) {
                         values.push(name + '[]=' + encodeURIComponent(value[index]));
                     }
-                } else {
+                } else if (value !== undefined) {
                     values.push(name + '=' + encodeURIComponent(value));
                 }
             }

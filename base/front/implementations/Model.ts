@@ -1,11 +1,11 @@
-import {observable} from 'mobx';
+﻿import {observable} from 'mobx';
 
-import {IModel} from './IModel';
-import {ISelectable} from './ISelectable';
-import CrudConnection from './CrudConnection';
+import {IData} from '../interfaces/IData';
+import {ICrudConnection} from '../interfaces/ICrudConnection';
+import {IModel, ModelNumberIndex, ModelStringIndex} from '../interfaces/IModel';
 import QueryModel from './QueryModel';
 
-export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U>> extends QueryModel<U> implements IModel<T>, ISelectable {
+export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U, any>> extends QueryModel<U> implements IModel<T, U, V> {
     Id: T;
 
     connection: V;
@@ -88,9 +88,13 @@ export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U
         }
     }
 
-    static wrapArray<T extends number, U extends IModel<T>, V extends Model<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: ModelNumberIndex<U>): V[];
-    static wrapArray<T extends string, U extends IModel<T>, V extends Model<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: ModelStringIndex<U>): V[];
-    static wrapArray<T, U extends IModel<T>, V extends Model<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: Object): V[] {
+    buildChildren(...indexes: (ModelNumberIndex<any> | ModelStringIndex<any>)[]) {
+
+    }
+
+    static wrapArray<T extends number, U extends IData<T>, V extends IModel<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: ModelNumberIndex<U>): V[];
+    static wrapArray<T extends string, U extends IData<T>, V extends IModel<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: ModelStringIndex<U>): V[];
+    static wrapArray<T, U extends IData<T>, V extends IModel<T, U, any>>(values: U[], model: new (data: U) => V, indexObject?: Object): V[] {
         var output: V[] = [];
         if (values) {
             for (var index = 0, length = values.length; index < length; index++) {
@@ -104,17 +108,11 @@ export default class Model<T, U extends IModel<T>, V extends CrudConnection<T, U
         return output;
     }
 
-    static unwrapArray<T, U extends IModel<T>, V extends Model<T, U, any>>(values: V[]) {
-        return values.map(function(value: V, index: number, array: V[]) {
+    static unwrapArray<T, U extends IData<T>, V extends IModel<T, U, any>>(values: V[]) {
+        return values.map((value: V, index: number, array: V[]) => {
             return value.unwrap();
         });
     }
 }
 
-export interface ModelNumberIndex<T extends IModel<number>> {
-    [index: number]: T;
-}
-
-export interface ModelStringIndex<T extends IModel<string>> {
-    [index: string]: T;
-}
+export {ModelNumberIndex, ModelStringIndex};
