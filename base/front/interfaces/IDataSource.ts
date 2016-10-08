@@ -12,7 +12,7 @@ export interface IDataSource<T, U extends IData<T>, V extends IListQuery> extend
     filter: IFilter<V>;
     cache: boolean;
 
-    init(data?: U[], store?: IStore<T, any, U, any, V>, query?: V, sort?: ISort<V>);
+    init(data?: U[], store?: IStore<T, any, U, any, V>, query?: V, sort?: ISort<V>, success?: (data: U[], count: number) => any, error?: (error: Error) => any);
     clearCache();
     clear();
 }

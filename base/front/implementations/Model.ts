@@ -1,9 +1,12 @@
 ﻿import {observable} from 'mobx';
+import {validate, ValidationError} from 'class-validator';
 
 import {IData} from '../interfaces/IData';
 import {ICrudConnection} from '../interfaces/ICrudConnection';
 import {IModel, ModelNumberIndex, ModelStringIndex} from '../interfaces/IModel';
 import QueryModel from './QueryModel';
+
+export {ValidationError};
 
 export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U, any>> extends QueryModel<U> implements IModel<T, U, V> {
     Id: T;
@@ -31,60 +34,91 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
         return output;
     }
 
-    save(success: (n: T | boolean) => any, error: (n: Error) => any) {
-        var self = this;
-        if (this.connection) {
-            this.saving = true;
-            if (this.Id) {
-                this.connection.put(this.unwrap(), function(data) {
-                    self.saving = false;
-                    if (success) {
-                        success(data);
+    validate(result: (errors: ValidationError[]) => any, error?: (reason: any) => any): any {
+        validate(this).then(result).catch(error);
+    }
+
+    save(success: (n: T | boolean) => any, error: (n: Error, e?: ValidationError[]) => any) {
+        this.validate((errors: ValidationError[]) => {
+            if (!errors.length) {
+                if (this.connection) {
+                    this.saving = true;
+                    if (this.Id) {
+                        this.connection.put(this.unwrap(), (data) => {
+                            this.saving = false;
+                            if (success) {
+                                success(data);
+                            }
+                        }, (data) => {
+                            this.saving = false;
+                            if (error) {
+                                error(data);
+                            }
+                        });
+                    } else {
+                        this.connection.post(this.unwrap(), (data) => {
+                            this.Id = data;
+                            this.saving = false;
+                            if (success) {
+                                success(data);
+                            }
+                        }, (data) => {
+                            this.saving = false;
+                            if (error) {
+                                error(data);
+                            }
+                        });
                     }
-                }, function(data) {
-                    self.saving = false;
+                } else {
                     if (error) {
-                        error(data);
+                        error(new Error('No connection associated with Model.'));
                     }
-                });
+                }
             } else {
-                this.connection.post(this.unwrap(), function(data) {
-                    self.Id = data;
-                    self.saving = false;
-                    if (success) {
-                        success(data);
+                /*
+                var errorIndex = {};
+                for (var index = 0, length = errors.length; index < length; index++) {
+                    var validationError = errors[index];
+                    if (this === validationError.target) {
+                        errorIndex[validationError.property] = validationError;
                     }
-                }, function(data) {
-                    self.saving = false;
-                    if (error) {
-                        error(data);
-                    }
-                });
+                }
+                */
+                if (error) {
+                    error(new Error('Model is invalid.'), errors);
+                }
             }
-        } else {
-            error(new Error('No connection associated with Model.'));
-        }
+        }, () => {
+            if (error) {
+                error(new Error('Validation system failed.'));
+            }
+        });
     }
 
     delete(success: (n: boolean) => any, error: (n: Error) => any) {
-        var self = this;
         if (this.connection) {
             if (this.Id) {
                 this.deleting = true;
-                this.connection.delete(this.Id, function(data) {
-                    self.deleting = false;
+                this.connection.delete(this.Id, (data) => {
+                    this.deleting = false;
                     if (success) {
                         success(data);
                     }
-                }, function(data) {
-                    self.deleting = false;
+                }, (data) => {
+                    this.deleting = false;
                     if (error) {
                         error(data);
                     }
                 });
             } else {
+                if (error) {
+                    error(new Error('Model does not have an Id.'));
+                }
             }
         } else {
+            if (error) {
+                error(new Error('No connection associated with Model.'));
+            }
         }
     }
 
@@ -115,4 +149,4 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
     }
 }
 
-export {ModelNumberIndex, ModelStringIndex};
+export {ModelNumberIndex, ModelStringIndex}

@@ -51,9 +51,9 @@ export default class Manager<T, U extends IData<T>, V extends IModel<T, U, any>,
         this.dataSource = new DataSource<T, U, X>(undefined, this.store, this.filter);
     }
 
-    init(id?: T, query?: X, defaultItem?: X) {
+    init(id?: T, query?: X, defaultItem?: X, success?: (data: U[], count: number) => any, error?: (error: Error) => any) {
         this.defaultItem = defaultItem;
-        this.dataSource.init(undefined, this.store, query);
+        this.dataSource.init(undefined, this.store, query, undefined, success, error);
         if (id) {
             this.edit(id);
         }

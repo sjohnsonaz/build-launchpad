@@ -2,6 +2,7 @@
 import {ICrudConnection} from '../interfaces/ICrudConnection';
 import {IListQuery} from '../interfaces/IListQuery';
 import {IModel} from '../interfaces/IModel';
+import {IQueryModel} from '../interfaces/IQueryModel';
 import {IData} from '../interfaces/IData';
 import {IStore} from '../interfaces/IStore';
 
@@ -84,6 +85,17 @@ export default class Store<T, U extends ICrudConnection<T, V, X>, V extends IDat
                 error(data);
             }
         });
+    }
+
+    static objectArrayToQueryModelArray<T, U extends IQueryModel<T>>(data: Array<T>, model: new (data?: T) => U): Array<U> {
+        var results: Array<U> = [];
+        if (data) {
+            for (var index = 0, length = data.length; index < length; index++) {
+                var item = data[index];
+                results.push(new model(item));
+            }
+        }
+        return results;
     }
 
     static objectArrayToModelArray<T extends IData<any>, U extends IModel<any, T, V>, V extends ICrudConnection<any, T, any>>(data: Array<T>, model: new (data?: T, connection?: V) => U, connection?: V): Array<U> {

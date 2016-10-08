@@ -25,7 +25,7 @@ export interface IManager<T, U extends IData<T>, V extends IModel<T, U, any>, W 
     //selectedItems: U[];
     slideIndex: number;
 
-    init(id?: T, query?: X, defaultItem?: X): any;
+    init(id?: T, query?: X, defaultItem?: X, success?: (data: U[], count: number) => any, error?: (error: Error) => any): any;
     clear(): any;
     dispose(): any;
     // TODO: Fix this

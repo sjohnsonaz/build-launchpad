@@ -16,7 +16,7 @@ module.exports = {
     module: {
         loaders: [{
             test: /\.tsx?$/,
-            loader: 'ts-loader'
+            loader: 'babel-loader?presets[]=es2015!ts-loader'
         }]
     }
 };

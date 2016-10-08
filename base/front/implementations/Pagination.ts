@@ -32,7 +32,7 @@ export default class Pagination<T> implements IPagination<T> {
         });
     }
 
-    run(preservePage: boolean = false) {
+    run(preservePage: boolean = false, success?: (data: T[], count: number) => any, error?: (error: Error) => any) {
         this.runCount++;
         var runID = this.runCount;
         this.lockRefresh = false;
@@ -49,10 +49,16 @@ export default class Pagination<T> implements IPagination<T> {
                     this.error = false;
                     this.loaded = true;
                 }
-            }, () => {
+                if (success) {
+                    success(data, count);
+                }
+            }, (data: Error) => {
                 if (runID == this.runCount) {
                     this.error = true;
                     this.loaded = false;
+                }
+                if (error) {
+                    error(data);
                 }
             });
         })();

@@ -29,7 +29,7 @@ export interface IPagination<T> {
     runCount: number;
 
     dataComputed(): any;
-    run(preservePage?: boolean): any;
+    run(preservePage?: boolean, success?: (data: T[], count: number) => any, error?: (error: Error) => any): any;
     clear(): any;
     dispose(): any;
 }

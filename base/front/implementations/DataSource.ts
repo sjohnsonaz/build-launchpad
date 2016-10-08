@@ -69,7 +69,7 @@ export default class DataSource<T, U extends IData<T>, V extends IListQuery> ext
         this.lockRefresh = false;
     }
 
-    init(data?: U[], store?: IStore<T, any, U, any, V>, query?: V, sort?: ISort<V>) {
+    init(data?: U[], store?: IStore<T, any, U, any, V>, query?: V, sort?: ISort<V>, success?: (data: U[], count: number) => any, error?: (error: Error) => any) {
         this.lockRefresh = true;
         this.data = data;
         this.store = store;
@@ -77,7 +77,7 @@ export default class DataSource<T, U extends IData<T>, V extends IListQuery> ext
         //this.sort = sort || new Sort();
         this.cache = !!data;
         this.lockRefresh = false;
-        this.run();
+        this.run(false, success, error);
     }
 
     clearCache() {

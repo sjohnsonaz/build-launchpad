@@ -7,8 +7,8 @@ export interface IStates {
 */
 
 export abstract class State implements IState {
-    title: string;
-
+    title: string | JSX.Element;
+    showCommands: boolean;
     abstract init();
     abstract dispose();
 }
