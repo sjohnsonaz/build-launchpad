@@ -2,9 +2,9 @@ import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 //var ObjectId = mongoose.Schema.Types.ObjectId;
 
-import config from '../config';
+import config from '../../config';
 
-import {IUser} from '../interfaces/IUser';
+import {IUser} from '../../interfaces/data/IUser';
 
 //import {testPassword} from '../lib/Validation';
 

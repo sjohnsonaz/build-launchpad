@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
     entry: {
-        'main': './resources/scripts/main.ts'
+        'main': './resources/scripts/main.tsx'
     },
     output: {
         filename: './public/bundle/[name].js',

@@ -4,7 +4,7 @@ import * as ReactDom from 'react-dom';
 
 import Application from '../../applications/Application';
 
-import ApplicationState, {IInitialization} from '../../states/ApplicationState';
+import ApplicationState, {IInitialization} from '../../applications/ApplicationState';
 
 declare var $initialization: IInitialization;
 declare var $global: any;

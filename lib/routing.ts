@@ -6,7 +6,7 @@ import UserRoute from '../routes/UserRoute';
 import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
 
-import UserGateway from '../gateways/UserGateway';
+import UserGateway from '../implementations/gateways/UserGateway';
 
 export default function run(app) {
     const userGateway = new UserGateway();

@@ -3,7 +3,7 @@ import * as passportLocal from 'passport-local';
 
 import config from '../config';
 
-import UserGateway from '../gateways/UserGateway';
+import UserGateway from '../implementations/gateways/UserGateway';
 
 const userGateway = new UserGateway();
 var LocalStrategy = passportLocal.Strategy;

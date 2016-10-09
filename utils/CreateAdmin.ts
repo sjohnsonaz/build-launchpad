@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import User from '../schemas/UserModel';
+import User from '../implementations/schemas/UserModel';
 import config from '../config';
 
 export default class CreateAdmin {

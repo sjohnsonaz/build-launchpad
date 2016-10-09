@@ -1,11 +1,11 @@
-import {IModel} from '../base/front/IModel';
+import {IData} from '../../base/front/interfaces/IData';
 
 export enum Role {
     none,
     admin
 }
 
-export interface IUser extends IModel<string> {
+export interface IUser extends IData<string> {
     username: string;
     name: {
         first: string;

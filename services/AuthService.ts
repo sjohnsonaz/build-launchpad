@@ -4,7 +4,7 @@ import * as passport from 'passport';
 import {route, middleware} from '../base/back/Router';
 import Service from '../base/back/Service';
 
-import UserGateway from '../gateways/UserGateway';
+import UserGateway from '../implementations/gateways/UserGateway';
 import AuthHelper from '../helpers/AuthHelper';
 
 export default class AuthService extends Service<UserGateway> {

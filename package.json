@@ -28,6 +28,7 @@
     "handlebars-intl": "^1.1.2",
     "history": "^3.0.0",
     "mobx": "^2.3.5",
+    "mobx-react": "^3.5.8",
     "mongodb": "^2.1.18",
     "mongoose": "^4.5.3",
     "morgan": "~1.7.0",

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Router, Route, browserHistory} from 'react-router';
 
-import ApplicationState from '../states/ApplicationState';
+import ApplicationState from './ApplicationState';
 
 export interface ApplicationProps {
     application: ApplicationState;

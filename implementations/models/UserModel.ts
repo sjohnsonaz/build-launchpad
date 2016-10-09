@@ -3,16 +3,13 @@ declare var $global: any;
 
 import {observable, computed} from 'mobx';
 
-import Model from '../base/front/Model';
-import UserConnection from '../connections/UserConnection';
-import {IUser, Role} from '../interfaces/IUser';
+import {IUser, Role} from '../../interfaces/data/IUser';
+import {IUserModel} from '../../interfaces/models/IUserModel';
+import {IUserConnection} from '../../interfaces/connections/IUserConnection';
 
-export class UserFullName {
-    @observable first: string;
-    @observable last: string;
-}
+import Model from '../../base/front/implementations/Model';
 
-export default class User extends Model<string, IUser, UserConnection> implements IUser {
+export default class UserModel extends Model<string, IUser, IUserConnection> implements IUserModel {
     @observable username: string;
     name: UserFullName = new UserFullName();
     @observable password: string;
@@ -53,4 +50,9 @@ export default class User extends Model<string, IUser, UserConnection> implement
         output.modified = this.modified;
         return output;
     }
+}
+
+export class UserFullName {
+    @observable first: string;
+    @observable last: string;
 }
