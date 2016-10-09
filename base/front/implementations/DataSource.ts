@@ -1,5 +1,7 @@
 ﻿import {observable, computed} from 'mobx';
 
+import {ObjectConstructor} from '../../../lib/Object.assign';
+
 import {IData} from '../interfaces/IData';
 import {IListQuery} from '../interfaces/IListQuery';
 import {ISort, SortDirection} from '../interfaces/ISort';
