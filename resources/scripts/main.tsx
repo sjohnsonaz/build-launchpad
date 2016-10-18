@@ -6,6 +6,9 @@ import Application from '../../applications/Application';
 
 import ApplicationState, {IInitialization} from '../../applications/ApplicationState';
 
+import {polyfill} from '../../lib/Object.assign';
+polyfill();
+
 declare var $initialization: IInitialization;
 declare var $global: any;
 

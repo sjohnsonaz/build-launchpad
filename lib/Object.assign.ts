@@ -1,30 +1,32 @@
-declare var Object: any;
-
-export interface ObjectConstructor {
-    assign(target: any, ...sources: any[]): any;
+declare global {
+    interface Object {
+        assign(target: any, ...sources: any[]): any;
+    }
 }
 
-if (typeof Object.assign != 'function') {
-    (function() {
-        Object.assign = function(target) {
-            'use strict';
-            // We must check against these specific cases.
-            if (target === undefined || target === null) {
-                throw new TypeError('Cannot convert undefined or null to object');
-            }
+export function polyfill() {
+    if (typeof Object.assign != 'function') {
+        (function() {
+            Object.assign = function(target) {
+                'use strict';
+                // We must check against these specific cases.
+                if (target === undefined || target === null) {
+                    throw new TypeError('Cannot convert undefined or null to object');
+                }
 
-            var output = Object(target);
-            for (var index = 1; index < arguments.length; index++) {
-                var source = arguments[index];
-                if (source !== undefined && source !== null) {
-                    for (var nextKey in source) {
-                        if (source.hasOwnProperty(nextKey)) {
-                            output[nextKey] = source[nextKey];
+                var output = Object(target);
+                for (var index = 1; index < arguments.length; index++) {
+                    var source = arguments[index];
+                    if (source !== undefined && source !== null) {
+                        for (var nextKey in source) {
+                            if (source.hasOwnProperty(nextKey)) {
+                                output[nextKey] = source[nextKey];
+                            }
                         }
                     }
                 }
-            }
-            return output;
-        };
-    })();
+                return output;
+            };
+        })();
+    }
 }
