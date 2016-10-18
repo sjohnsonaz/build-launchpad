@@ -24,7 +24,10 @@ export default class Connection implements IConnection {
     }
 
     call<T>(url: string | Request, init: RequestInit, success: (data: T) => any, error: (data: Error) => any) {
-        fetch(url, init || {})
+        init = init || {};
+        // Change credentials default to 'include'.
+        init.credentials = init.credentials || 'include';
+        fetch(url, init)
             .then(this.status)
             .then(this.json)
             .then(success)

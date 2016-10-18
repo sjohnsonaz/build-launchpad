@@ -1,3 +1,3 @@
 ﻿export interface IData<T> {
-    Id: T;
+    _id: T;
 }
