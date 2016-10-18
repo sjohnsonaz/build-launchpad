@@ -1,5 +1,22 @@
 {
   "verbose": true,
   "watch": ["bin/www", "dist/"],
-  "ignore": ["*.d.ts", "*.js.map", "dist/__tests__/", "dist/resources/"]
+  "ignore": [
+    "*.d.ts",
+    "*.js.map",
+    "dist/__tests__/",
+    "dist/applications/",
+    "dist/base/front",
+    "dist/implementations/connections",
+    "dist/implementations/managers",
+    "dist/implementations/models",
+    "dist/implementations/states",
+    "dist/implementations/stores",
+    "dist/interfaces/connections",
+    "dist/interfaces/managers",
+    "dist/interfaces/models",
+    "dist/interfaces/states",
+    "dist/interfaces/stores",
+    "dist/public"
+  ]
 }

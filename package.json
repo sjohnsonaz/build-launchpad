@@ -13,7 +13,9 @@
     "test": "jest",
     "browser": "webpack --config webpack.config.js",
     "dev": "webpack --config webpack.config.js --watch",
-    "dev-server": "nodemon ./bin/www"
+    "dev-server": "nodemon ./bin/www",
+    "dev-server-debug": "nodemon --debug ./bin/www",
+    "dev-server-inspect": "nodev ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
@@ -35,6 +37,9 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "promise": "^7.1.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-router": "^2.8.1",
     "serve-favicon": "~2.3.0",
     "whatwg-fetch": "^1.0.0"
   },
@@ -48,6 +53,7 @@
     "babel-preset-stage-0": "^6.0.15",
     "jest-cli": "^12.1.1",
     "nodemon": "^1.9.2",
+    "nodev": "^0.8.8",
     "ts-loader": "^0.8.2",
     "typescript": "^1.8.10",
     "webpack": "^1.13.1"
