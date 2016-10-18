@@ -6,6 +6,9 @@ import Application from './Application';
 
 import ApplicationState, {IInitialization} from './ApplicationState';
 
+import Routing from './Routing';
+Routing.run();
+
 import {polyfill} from '../lib/Object.assign';
 polyfill();
 
