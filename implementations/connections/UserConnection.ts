@@ -6,6 +6,6 @@ import CrudConnection from '../../base/front/implementations/CrudConnection';
 
 export default class UserConnection extends CrudConnection<string, IUser, IUserQuery> implements IUserConnection {
     constructor(base: string, route?: string) {
-        super(base, route || 'User/');
+        super(base, route || 'user/');
     }
 }

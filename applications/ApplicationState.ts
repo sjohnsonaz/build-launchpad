@@ -4,6 +4,8 @@ import {browserHistory} from 'react-router';
 import {IConnectionIndex, IStoreIndex, IStateIndex} from '../base/front/interfaces/IGlobalState';
 import GlobalState from '../base/front/implementations/GlobalState';
 
+import AuthConnection from '../implementations/connections/AuthConnection';
+
 import UserConnection from '../implementations/connections/UserConnection';
 import UserStore from '../implementations/stores/UserStore';
 import UserManager from '../implementations/managers/UserManager';
@@ -17,6 +19,7 @@ export interface IInitialization {
 }
 
 export interface Connections extends IConnectionIndex {
+    authConnection: AuthConnection;
     userConnection: UserConnection;
 }
 
@@ -33,15 +36,16 @@ export default class ApplicationState extends GlobalState<Connections, Stores, A
         super();
 
         this.connections = {
-            userConnection: new UserConnection(initialization.apiPath),
+            authConnection: new AuthConnection(initialization.apiPath),
+            userConnection: new UserConnection(initialization.apiPath)
         };
 
         this.stores = {
-            userStore: new UserStore(this.connections.userConnection),
+            userStore: new UserStore(this.connections.userConnection)
         };
 
         this.states = {
-            userState: new UserManager(this.stores.userStore),
+            userState: new UserManager(this.stores.userStore)
         };
     }
 }

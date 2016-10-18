@@ -57,7 +57,7 @@ app.use(session({
 authentication(app);
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, config.publicPath)));
 
 // Inject session into response
 app.use(function(req, res, next) {

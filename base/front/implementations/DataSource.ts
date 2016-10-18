@@ -114,8 +114,8 @@ export default class DataSource<T, U extends IData<T>, V extends IListQuery> ext
 
     static buildQuery<T>(page: number, pageSize: number, sort: ISort<T>, filter: IFilter<T>) {
         return Object.assign({
-            offset: page * pageSize,
-            limit: pageSize
+            page: page,
+            pageSize: pageSize
         }, sort.toQuery(), filter.toQuery());
     }
 

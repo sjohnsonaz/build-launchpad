@@ -1,0 +1,18 @@
+{{#section 'scripts'}}
+    <script type="text/javascript">
+        var $initialization = {
+            rootPath: "/admin",
+            controllerPath: "/admin",
+            applicationPath: "/admin/",
+            apiPath: "/api/"
+        };
+        var $global = {
+            initialization: $initialization
+        };
+    </script>
+    <script src="/bundle/main.js"></script>
+{{/section}}
+
+<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+<div id="application-root"></div>
