@@ -1,13 +1,28 @@
 import * as express from 'express';
 
-export type RouteMethod = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';
+import {getArgumentNames} from '../util/FunctionUtil';
+
+export type RouteVerb = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';
 
 export type Middleware = express.RequestHandler | express.RequestHandler[];
 
+export function wrapMethod(method: Function) {
+    var argumentNames = getArgumentNames(method);
+    var wrappedMethod = function(req: express.Request, res: express.Response, next: express.NextFunction) {
+        var args = [];
+        for (var index = 0, length = argumentNames.length; index < length; index++) {
+            var argumentName = argumentNames[index];
+            var arg = req.params[argumentName] || req.query[argumentName] || req.body[argumentName];
+            args.push(arg);
+        }
+    }
+}
+
 export class RouteDefinition {
-    method: RouteMethod;
+    verb: RouteVerb;
     name: string | RegExp;
     middleware: Middleware[] = [];
+    pipeArgs: boolean = false;
 }
 
 export interface RouteNames {
@@ -28,12 +43,13 @@ export class RouteBuilder {
         this.routeNames[methodName].middleware.push(middleware);
     }
 
-    addDefinition(methodName: string, method: RouteMethod, name: string | RegExp) {
+    addDefinition(methodName: string, verb: RouteVerb, name: string | RegExp, pipeArgs: boolean = false) {
         if (!this.routeNames[methodName]) {
             this.routeNames[methodName] = new RouteDefinition();
         }
-        this.routeNames[methodName].method = method;
+        this.routeNames[methodName].verb = verb;
         this.routeNames[methodName].name = name;
+        this.routeNames[methodName].pipeArgs = pipeArgs;
     }
 
     build(router: express.IRouter<express.Router>, controller: Object) {
@@ -48,7 +64,7 @@ export class RouteBuilder {
                 if (method) {
                     method = method.bind(controller);
                 }
-                switch (routeName.method) {
+                switch (routeName.verb) {
                     case 'all':
                         router.all(routeName.name, ...middleware, method);
                         break;
@@ -90,10 +106,10 @@ function getRouteBuilder(target: Router) {
     return target.routeBuilder;
 }
 
-export function route(method: RouteMethod, name: string | RegExp) {
+export function route(verb: RouteVerb, name: string | RegExp, pipeArgs: boolean = false) {
     return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
-        routeBuilder.addDefinition(propertyKey, method, name);
+        routeBuilder.addDefinition(propertyKey, verb, name);
     }
 }
 

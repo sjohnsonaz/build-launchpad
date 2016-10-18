@@ -1,4 +1,3 @@
-/*
 export function getArgumentNames(func: Function) {
     // First match everything inside the function argument parens.
     var args = func.toString().match(/function\s.*?\(([^)]*)\)/)[1];
@@ -12,4 +11,3 @@ export function getArgumentNames(func: Function) {
         return arg;
     });
 }
-*/
