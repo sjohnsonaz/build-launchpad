@@ -5,7 +5,7 @@ export enum Role {
     admin
 }
 
-export interface IUser extends IData<string> {
+export interface IUser extends IData<any> {
     username: string;
     name: {
         first: string;

@@ -9,7 +9,7 @@ import QueryModel from './QueryModel';
 export {ValidationError};
 
 export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U, any>> extends QueryModel<U> implements IModel<T, U, V> {
-    Id: T;
+    _id: T;
 
     connection: V;
     @observable saving: boolean;
@@ -25,12 +25,12 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
 
     wrap(data: U) {
         super.wrap(data);
-        this.Id = data.Id;
+        this._id = data._id;
     }
 
     unwrap(): U {
         var output = super.unwrap();
-        output.Id = this.Id;
+        output._id = this._id;
         return output;
     }
 
@@ -43,7 +43,7 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
             if (!errors.length) {
                 if (this.connection) {
                     this.saving = true;
-                    if (this.Id) {
+                    if (this._id) {
                         this.connection.put(this.unwrap(), (data) => {
                             this.saving = false;
                             if (success) {
@@ -57,7 +57,7 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
                         });
                     } else {
                         this.connection.post(this.unwrap(), (data) => {
-                            this.Id = data;
+                            this._id = data;
                             this.saving = false;
                             if (success) {
                                 success(data);
@@ -97,9 +97,9 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
 
     delete(success: (n: boolean) => any, error: (n: Error) => any) {
         if (this.connection) {
-            if (this.Id) {
+            if (this._id) {
                 this.deleting = true;
-                this.connection.delete(this.Id, (data) => {
+                this.connection.delete(this._id, (data) => {
                     this.deleting = false;
                     if (success) {
                         success(data);
@@ -112,7 +112,7 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
                 });
             } else {
                 if (error) {
-                    error(new Error('Model does not have an Id.'));
+                    error(new Error('Model does not have an _id.'));
                 }
             }
         } else {
@@ -134,7 +134,7 @@ export default class Model<T, U extends IData<T>, V extends ICrudConnection<T, U
             for (var index = 0, length = values.length; index < length; index++) {
                 var wrappedValue = new model(values[index]);
                 if (indexObject) {
-                    indexObject[wrappedValue.Id as any] = wrappedValue;
+                    indexObject[wrappedValue._id as any] = wrappedValue;
                 }
                 output.push(wrappedValue);
             }

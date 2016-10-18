@@ -3,6 +3,6 @@ import {IUserConnection} from '../connections/IUserConnection';
 
 import {IModel} from '../../base/front/interfaces/IModel';
 
-export interface IUserModel extends IModel<string, IUser, IUserConnection> {
+export interface IUserModel extends IModel<any, IUser, IUserConnection>, IUser {
 
 }

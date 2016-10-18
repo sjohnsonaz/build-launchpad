@@ -9,7 +9,7 @@ import {IUserConnection} from '../../interfaces/connections/IUserConnection';
 
 import Model from '../../base/front/implementations/Model';
 
-export default class UserModel extends Model<string, IUser, IUserConnection> implements IUserModel {
+export default class UserModel extends Model<any, IUser, IUserConnection> implements IUserModel {
     @observable username: string;
     name: UserFullName = new UserFullName();
     @observable password: string;

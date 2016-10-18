@@ -15,7 +15,6 @@ export interface IInitialization {
     controllerPath: string;
     applicationPath: string;
     apiPath: string;
-    companyId: any;
 }
 
 export interface Connections extends IConnectionIndex {

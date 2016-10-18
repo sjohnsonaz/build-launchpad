@@ -6,7 +6,6 @@ import {ISelectable} from './ISelectable';
 import {ICrudConnection} from './ICrudConnection';
 
 export interface IModel<T, U extends IData<T>, V extends ICrudConnection<T, U, any>> extends IData<T>, IQueryModel<U>, ISelectable {
-    Id: T;
     save(success: (n: T | boolean) => any, error: (n: Error, e?: ValidationError[]) => any): any;
     delete(success: (n: boolean) => any, error: (n: Error) => any): any;
 }
