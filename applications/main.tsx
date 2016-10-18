@@ -2,11 +2,11 @@ declare var window: any;
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
-import Application from '../../applications/Application';
+import Application from './Application';
 
-import ApplicationState, {IInitialization} from '../../applications/ApplicationState';
+import ApplicationState, {IInitialization} from './ApplicationState';
 
-import {polyfill} from '../../lib/Object.assign';
+import {polyfill} from '../lib/Object.assign';
 polyfill();
 
 declare var $initialization: IInitialization;
@@ -26,4 +26,4 @@ window.onload = function() {
     ReactDom.render((
         <Application path={$global.initialization.controllerPath} application={applicationState}></Application>
     ), document.getElementById('application-root'));
-}
+};
