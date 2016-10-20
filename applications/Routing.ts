@@ -10,6 +10,11 @@ export default class Routing {
                 },
                 function(id) {
                     console.log('Route \'user/:id\' ' + id);
+                },
+                {
+                    'create': function(info) {
+                        console.log('Route \'user/create/:info\' ' + info);
+                    }
                 }
             ],
             '': function() {

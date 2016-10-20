@@ -151,8 +151,8 @@ function buildRouteDefinitionGroup(prefix: string, definitionGroup: IRouteDefini
     for (var subPrefix in definitionGroup) {
         if (definitionGroup.hasOwnProperty(subPrefix)) {
             var definitions = definitionGroup[subPrefix];
+            var fullPrefix = prefix ? prefix + '/' + subPrefix : subPrefix;
             if (definitions instanceof Array) {
-                var fullPrefix = prefix ? prefix + '/' + subPrefix : subPrefix;
                 for (var index = 0, length = definitions.length; index < length; index++) {
                     var definition = definitions[index];
                     if (typeof definition === 'function') {
@@ -162,7 +162,7 @@ function buildRouteDefinitionGroup(prefix: string, definitionGroup: IRouteDefini
                     }
                 }
             } else {
-                routes.push(buildRouteFromFunction(subPrefix, definitions));
+                routes.push(buildRouteFromFunction(fullPrefix, definitions));
             }
         }
     }
