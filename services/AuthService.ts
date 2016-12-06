@@ -8,7 +8,7 @@ import UserGateway from '../implementations/gateways/UserGateway';
 import AuthHelper from '../helpers/AuthHelper';
 
 export default class AuthService extends Service<UserGateway> {
-    @route('get', '/')
+    @route('get', '/', false)
     get(req, res, next) {
         res.json({
             loggedIn: !!req.user,
@@ -16,13 +16,13 @@ export default class AuthService extends Service<UserGateway> {
         });
     }
 
-    @route('post', '/login')
+    @route('post', '/login', false)
     @middleware(passport.authenticate('local'))
     login(req, res, next) {
         res.json(req.user);
     }
 
-    @route('post', '/logout')
+    @route('post', '/logout', false)
     logout(req, res, next) {
         req.session.destroy(function(err) {
             if (!err) {
@@ -33,7 +33,7 @@ export default class AuthService extends Service<UserGateway> {
         });
     }
 
-    @route('post', '/impersonate')
+    @route('post', '/impersonate', false)
     @middleware(AuthHelper.adminNotImpersonated)
     impersonate(req, res, next) {
         this.gateway.getByUsername(req.body.username, function(err, user) {
@@ -59,7 +59,7 @@ export default class AuthService extends Service<UserGateway> {
         });
     }
 
-    @route('post', '/unimpersonate')
+    @route('post', '/unimpersonate', false)
     @middleware(AuthHelper.impersonated)
     unimpersonate(req, res, next) {
         var adminUser = (req.session as any).adminUser;

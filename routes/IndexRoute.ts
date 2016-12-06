@@ -1,8 +1,13 @@
 import Router, {route} from '../base/back/Router';
 
 export default class IndexRoute extends Router {
+    @route()
+    get(id) {
+        res.render('index', { title: 'Express', id: id });
+    }
+
     @route('get', '/')
-    get(req, res, next) {
-        res.render('index', { title: 'Express' });
+    list() {
+        res.render('index', { title: 'Express', id: 'none' });
     }
 }

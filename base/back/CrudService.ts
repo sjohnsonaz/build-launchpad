@@ -8,7 +8,7 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         super(gateway);
     }
 
-    @route('get', '/:id')
+    @route('get', '/:id', false)
     @middleware(AuthHelper.admin)
     get(req, res, next) {
         this.gateway.get(req.params.id, function(err, result) {
@@ -20,7 +20,7 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('get', '/')
+    @route('get', '/', false)
     @middleware(AuthHelper.admin)
     list(req, res, next) {
         console.log(this);
@@ -45,7 +45,7 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('post', '/')
+    @route('post', '/', false)
     @middleware(AuthHelper.admin)
     post(req, res, next) {
         this.gateway.create(req.body, function(err, result) {
@@ -57,7 +57,7 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('put', '/:id')
+    @route('put', '/:id', false)
     @middleware(AuthHelper.admin)
     put(req, res, next) {
         this.gateway.update(req.params.id, req.body, function(err, affectedRows, result) {
@@ -69,7 +69,7 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('delete', '/:id')
+    @route('delete', '/:id', false)
     @middleware(AuthHelper.admin)
     delete(req, res, next) {
         this.gateway.delete(req.params.id, function(err) {

@@ -6,13 +6,13 @@ import {IForeignKeyFilter} from '../interfaces/IForeignKeyFilter';
 
 import Filter from './Filter';
 
-export class FutureForeignKey extends ForeignKey {
-
-}
-
 export class ForeignKey {
     name: string;
     value: number;
+}
+
+export class FutureForeignKey extends ForeignKey {
+
 }
 
 export interface ForeignKeyHash {

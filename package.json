@@ -54,8 +54,8 @@
     "jest-cli": "^12.1.1",
     "nodemon": "^1.9.2",
     "nodev": "^0.8.8",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
+    "ts-loader": "^0.9.5",
+    "typescript": "^2.1.1",
     "webpack": "^1.13.1"
   },
   "jest": {

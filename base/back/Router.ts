@@ -1,22 +1,16 @@
 import * as express from 'express';
 
-import {getArgumentNames} from '../util/FunctionUtil';
+declare global {
+    export var req: express.Request;
+    export var res: express.Response;
+    export var next: express.NextFunction;
+}
+
+import {getArgumentNames, wrapMethod} from '../util/FunctionUtil';
 
 export type RouteVerb = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';
 
 export type Middleware = express.RequestHandler | express.RequestHandler[];
-
-export function wrapMethod(method: Function) {
-    var argumentNames = getArgumentNames(method);
-    var wrappedMethod = function(req: express.Request, res: express.Response, next: express.NextFunction) {
-        var args = [];
-        for (var index = 0, length = argumentNames.length; index < length; index++) {
-            var argumentName = argumentNames[index];
-            var arg = req.params[argumentName] || req.query[argumentName] || req.body[argumentName];
-            args.push(arg);
-        }
-    }
-}
 
 export class RouteDefinition {
     verb: RouteVerb;
@@ -43,7 +37,7 @@ export class RouteBuilder {
         this.routeNames[methodName].middleware.push(middleware);
     }
 
-    addDefinition(methodName: string, verb: RouteVerb, name: string | RegExp, pipeArgs: boolean = false) {
+    addDefinition(methodName: string, verb: RouteVerb, name: string | RegExp, pipeArgs: boolean = true) {
         if (!this.routeNames[methodName]) {
             this.routeNames[methodName] = new RouteDefinition();
         }
@@ -52,7 +46,9 @@ export class RouteBuilder {
         this.routeNames[methodName].pipeArgs = pipeArgs;
     }
 
-    build(router: express.IRouter<express.Router>, controller: Object) {
+    baseRoutes: RouteVerb[] = ['all', 'get', 'post', 'put', 'delete', 'patch', 'options', 'head'];
+
+    build(router: express.IRouter<express.Router>, controller: Router) {
         if (this.parent) {
             this.parent.build(router, controller);
         }
@@ -60,34 +56,55 @@ export class RouteBuilder {
             if (this.routeNames.hasOwnProperty(index)) {
                 var routeName = this.routeNames[index];
                 var middleware = routeName.middleware;
+                var name = routeName.name;
+                var verb = routeName.verb;
+                if (this.baseRoutes.indexOf(index as any) >= 0) {
+                    if (!verb) {
+                        verb = index as any;
+                    }
+                    if (!name) {
+                        name = '/' + controller.getBase() + '/';
+                    }
+                }
+                if (!name) {
+                    name = '/' + controller.getBase() + '/' + index + '/';
+                }
                 var method = controller[index];
                 if (method) {
-                    method = method.bind(controller);
+                    if (routeName.pipeArgs) {
+                        name = name + getArgumentNames(method).map(function(value) {
+                            return ':' + value;
+                        }).join('/');
+                        console.log(name);
+                        method = wrapMethod(method, controller);
+                    } else {
+                        method = method.bind(controller);
+                    }
                 }
-                switch (routeName.verb) {
+                switch (verb) {
                     case 'all':
-                        router.all(routeName.name, ...middleware, method);
+                        router.all(name, ...middleware, method);
                         break;
                     case 'get':
-                        router.get(routeName.name, ...middleware, method);
+                        router.get(name, ...middleware, method);
                         break;
                     case 'post':
-                        router.post(routeName.name, ...middleware, method);
+                        router.post(name, ...middleware, method);
                         break;
                     case 'put':
-                        router.put(routeName.name, ...middleware, method);
+                        router.put(name, ...middleware, method);
                         break;
                     case 'delete':
-                        router.delete(routeName.name, ...middleware, method);
+                        router.delete(name, ...middleware, method);
                         break;
                     case 'patch':
-                        router.patch(routeName.name, ...middleware, method);
+                        router.patch(name, ...middleware, method);
                         break;
                     case 'options':
-                        router.options(routeName.name, ...middleware, method);
+                        router.options(name, ...middleware, method);
                         break;
                     case 'head':
-                        router.head(routeName.name, ...middleware, method);
+                        router.head(name, ...middleware, method);
                         break;
                 }
             }
@@ -106,10 +123,10 @@ function getRouteBuilder(target: Router) {
     return target.routeBuilder;
 }
 
-export function route(verb: RouteVerb, name: string | RegExp, pipeArgs: boolean = false) {
+export function route(verb?: RouteVerb, name?: string | RegExp, pipeArgs: boolean = true) {
     return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
-        routeBuilder.addDefinition(propertyKey, verb, name);
+        routeBuilder.addDefinition(propertyKey, verb, name, pipeArgs);
     }
 }
 
@@ -121,13 +138,29 @@ export function middleware(middleware: Middleware) {
 }
 
 export default class Router {
+    base: string;
     routeBuilder: RouteBuilder;
     expressRouter: express.IRouter<express.Router>;
-    constructor() {
+    constructor(base: string) {
+        this.base = base;
         this.expressRouter = express.Router();
         this.build();
     }
     build() {
         this.routeBuilder.build(this.expressRouter, this);
+    }
+    getBase() {
+        if (this.base) {
+            return this.base;
+        } else {
+            var name = (this.constructor as any).name;
+            if (name) {
+                var results = name.match(/(.*)([sS]ervice|[rR]oute)/);
+                if (results && results[1]) {
+                    name = results[1].toLowerCase();
+                }
+            }
+            return name;
+        }
     }
 }
