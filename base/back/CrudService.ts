@@ -8,10 +8,10 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         super(gateway);
     }
 
-    @route('get', '/:id', false)
+    @route()
     @middleware(AuthHelper.admin)
-    get(req, res, next) {
-        this.gateway.get(req.params.id, function(err, result) {
+    get(id: string) {
+        this.gateway.get(id, function(err, result) {
             if (err) {
                 return next(err);
             } else {
@@ -20,19 +20,19 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('get', '/', false)
+    @route(undefined, undefined, false)
     @middleware(AuthHelper.admin)
-    list(req, res, next) {
+    list(page: number, pageSize: number, sortedColumn: string, sortedDirection: number) {
         console.log(this);
         this.gateway.list({
             find: {},
             select: undefined,
-            page: req.query.page,
-            pageSize: req.query.pageSize,
+            page: page,
+            pageSize: pageSize,
             sort: (function() {
-                if (req.query.sortedColumn) {
+                if (sortedColumn) {
                     var output = {};
-                    output[req.query.sortedColumn] = (req.query.sortedDirection === undefined || req.query.sortedDirection) ? 1 : -1;
+                    output[sortedColumn] = (sortedDirection === undefined || sortedDirection) ? 1 : -1;
                     return output;
                 }
             })()
@@ -45,9 +45,9 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('post', '/', false)
+    @route()
     @middleware(AuthHelper.admin)
-    post(req, res, next) {
+    post() {
         this.gateway.create(req.body, function(err, result) {
             if (err || !result) {
                 return next(err);
@@ -57,10 +57,10 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('put', '/:id', false)
+    @route()
     @middleware(AuthHelper.admin)
-    put(req, res, next) {
-        this.gateway.update(req.params.id, req.body, function(err, affectedRows, result) {
+    put(id: string) {
+        this.gateway.update(id, req.body, function(err, affectedRows, result) {
             if (err) {
                 return next(err);
             } else {
@@ -69,10 +69,10 @@ export default class CrudService<T extends Gateway<any>> extends Service<T> {
         });
     }
 
-    @route('delete', '/:id', false)
+    @route()
     @middleware(AuthHelper.admin)
-    delete(req, res, next) {
-        this.gateway.delete(req.params.id, function(err) {
+    delete(id: string) {
+        this.gateway.delete(id, function(err) {
             if (err) {
                 return next(err);
             } else {

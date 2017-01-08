@@ -8,7 +8,7 @@ declare global {
 
 import {getArgumentNames, wrapMethod} from '../util/FunctionUtil';
 
-export type RouteVerb = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';
+export type RouteVerb = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head' | 'list';
 
 export type Middleware = express.RequestHandler | express.RequestHandler[];
 
@@ -46,7 +46,7 @@ export class RouteBuilder {
         this.routeNames[methodName].pipeArgs = pipeArgs;
     }
 
-    baseRoutes: RouteVerb[] = ['all', 'get', 'post', 'put', 'delete', 'patch', 'options', 'head'];
+    baseRoutes: RouteVerb[] = ['all', 'get', 'post', 'put', 'delete', 'patch', 'options', 'head', 'list'];
 
     build(router: express.IRouter<express.Router>, controller: Router) {
         if (this.parent) {
@@ -75,16 +75,17 @@ export class RouteBuilder {
                         name = name + getArgumentNames(method).map(function(value) {
                             return ':' + value;
                         }).join('/');
-                        console.log(name);
                         method = wrapMethod(method, controller);
                     } else {
                         method = method.bind(controller);
                     }
                 }
+                console.log(verb + ' - ' + name);
                 switch (verb) {
                     case 'all':
                         router.all(name, ...middleware, method);
                         break;
+                    case 'list':
                     case 'get':
                         router.get(name, ...middleware, method);
                         break;
@@ -124,14 +125,14 @@ function getRouteBuilder(target: Router) {
 }
 
 export function route(verb?: RouteVerb, name?: string | RegExp, pipeArgs: boolean = true) {
-    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
+    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<(...any) => any | express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
         routeBuilder.addDefinition(propertyKey, verb, name, pipeArgs);
     }
 }
 
 export function middleware(middleware: Middleware) {
-    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
+    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<(...any) => any | express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
         routeBuilder.addMiddleware(propertyKey, middleware);
     }
@@ -141,7 +142,7 @@ export default class Router {
     base: string;
     routeBuilder: RouteBuilder;
     expressRouter: express.IRouter<express.Router>;
-    constructor(base: string) {
+    constructor(base?: string) {
         this.base = base;
         this.expressRouter = express.Router();
         this.build();

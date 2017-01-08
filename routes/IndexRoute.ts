@@ -6,8 +6,8 @@ export default class IndexRoute extends Router {
         res.render('index', { title: 'Express', id: id });
     }
 
-    @route('get', '/')
-    list() {
+    @route('get', '/', false)
+    list(req, res, next) {
         res.render('index', { title: 'Express', id: 'none' });
     }
 }
