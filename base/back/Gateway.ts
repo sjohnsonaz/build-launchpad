@@ -6,7 +6,7 @@ export interface QueryResult<T extends mongoose.Document> {
 }
 
 export default class Gateway<T extends mongoose.Document> {
-    modelType:  mongoose.Model<T>;
+    modelType: mongoose.Model<T>;
     constructor(modelType: mongoose.Model<T>) {
         this.modelType = modelType;
     }

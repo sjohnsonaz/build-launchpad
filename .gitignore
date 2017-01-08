@@ -31,3 +31,4 @@ typings/
 dist/
 public/bundle/
 *.tgz
+.vscode/

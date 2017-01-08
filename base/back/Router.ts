@@ -6,7 +6,7 @@ declare global {
     export var next: express.NextFunction;
 }
 
-import {getArgumentNames, wrapMethod} from '../util/FunctionUtil';
+import { getArgumentNames, wrapMethod } from '../util/FunctionUtil';
 
 export type RouteVerb = 'all' | 'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';
 
@@ -72,7 +72,7 @@ export class RouteBuilder {
                 var method = controller[index];
                 if (method) {
                     if (routeName.pipeArgs) {
-                        name = name + getArgumentNames(method).map(function(value) {
+                        name = name + getArgumentNames(method).map(function (value) {
                             return ':' + value;
                         }).join('/');
                         console.log(name);
@@ -124,14 +124,14 @@ function getRouteBuilder(target: Router) {
 }
 
 export function route(verb?: RouteVerb, name?: string | RegExp, pipeArgs: boolean = true) {
-    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
+    return function (target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
         routeBuilder.addDefinition(propertyKey, verb, name, pipeArgs);
     }
 }
 
 export function middleware(middleware: Middleware) {
-    return function(target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
+    return function (target: Router, propertyKey: string, descriptor: TypedPropertyDescriptor<express.RequestHandler>) {
         var routeBuilder = getRouteBuilder(target);
         routeBuilder.addMiddleware(propertyKey, middleware);
     }
